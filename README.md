@@ -20,7 +20,7 @@ plant-monitoring/
 └── README.md
 ```
 
-### Prerequisites
+## Prerequisites
 
 - Node.js LTS — <https://nodejs.org>
 - PostgreSQL client (for DB setup) — `brew install libpq`
