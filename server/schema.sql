@@ -25,7 +25,7 @@ INSERT INTO readings (gateway_id, temperature, humidity, recorded_at)
 VALUES (1, 22.5, 58.3, NOW());
 INSERT INTO readings (gateway_id, temperature, humidity, recorded_at)
 VALUES (1, 23.1, 57.1, NOW() - interval '5 minutes');
-INSERT INTOreadings (gateway_id, temperature, humidity, recorded_at)
+INSERT INTO readings (gateway_id, temperature, humidity, recorded_at)
 VALUES (1, 21.8, 60.2, NOW() - interval '10 minutes');
 -- check data:
 -- SELECT * FROM gateways;
