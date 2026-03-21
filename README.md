@@ -20,8 +20,6 @@ plant-monitoring/
 └── README.md
 ```
 
-## Running locally
-
 ### Prerequisites
 
 - Node.js LTS — <https://nodejs.org>
@@ -31,14 +29,17 @@ plant-monitoring/
 ## Database setup
 
 ### Option A — Supabase (shared team database)
+
 Database is hosted on Supabase (free tier, no expiry).
 
 Run once to initialise a fresh database:
+
 ```bash
 psql -f server/schema.sql postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres
 ```
 
 To connect and inspect manually:
+
 ```bash
 psql postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres
 ```
@@ -46,24 +47,29 @@ psql postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres
 Get the full connection string from the team.
 
 ### Option B — Local PostgreSQL (offline development)
+
 Install and start PostgreSQL:
+
 ```bash
 brew install postgresql@15
 brew services start postgresql@15
 ```
 
 Create and initialise local database:
+
 ```bash
 createdb flowerpower
 psql -f server/schema.sql postgresql://localhost/flowerpower
 ```
 
 Connect to inspect manually:
+
 ```bash
 psql postgresql://localhost/flowerpower
 ```
 
 Then set your local `.env` with development:
+
 ```
 DATABASE_URL=postgresql://localhost/flowerpower
 PORT=3001
