@@ -127,27 +127,29 @@ VITE_API_URL=https://your-backend.onrender.com
 
 ## API endpoints
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/ping` | None | Health check |
-| GET | `/measurements` | None | Last 50 measurements |
-| POST | `/measurements` | API key | Submit new measurement from gateway |
-| GET | `/measurements/:gatewayId` | None | Last 50 for a specific gateway |
-| GET | `/gateways` | None | List all gateways |
-| POST | `/gateways/register` | None | Register a new gateway |
-| PATCH | `/gateways/:id/status` | None | Update gateway online/offline status |
-| GET | `/plants` | None | List all plants |
-| POST | `/plants` | None | Create a plant |
-| PATCH | `/plants/:id` | None | Update plant name or thresholds |
-| DELETE | `/plants/:id` | None | Remove a plant |
-| GET | `/alerts` | None | List active alerts (add `?resolved=true` for all) |
-| POST | `/alerts` | None | Create an alert |
-| PATCH | `/alerts/:id/resolve` | None | Mark alert as resolved |
+| Method | Endpoint | Auth | Design command |
+|--------|----------|------|----------------|
+| GET | `/ping` | None | — |
+| POST | `/gateways` | None | `gateway/create` |
+| GET | `/gateways` | None | `gateway/list` |
+| GET | `/gateways/:id` | None | `gateway/get` |
+| PATCH | `/gateways/:id` | None | `gateway/update` |
+| DELETE | `/gateways/:id` | None | `gateway/delete` |
+| POST | `/plants` | None | `plant/create` |
+| GET | `/plants` | None | `plant/list` (add `?gatewayId=` to filter) |
+| GET | `/plants/:id` | None | `plant/get` |
+| PATCH | `/plants/:id` | None | `plant/update` |
+| DELETE | `/plants/:id` | None | `plant/delete` |
+| POST | `/measurements` | API key | `measurement/create` |
+| GET | `/measurements` | None | `measurement/list` (add `?gatewayId=` to filter) |
+| DELETE | `/measurements/old` | None | `measurement/deleteOld` (add `?days=30`) |
+| GET | `/alerts` | None | `alert/list` (add `?resolved=true` for all) |
+| PATCH | `/alerts/:id` | None | `alert/update` |
 
 ### Register a gateway
 
 ```bash
-curl -X POST http://localhost:3001/gateways/register \
+curl -X POST http://localhost:3001/gateways \
   -H "Content-Type: application/json" \
   -d '{"name": "RPi Gateway 1"}'
 ```
@@ -180,7 +182,7 @@ curl -X POST http://localhost:3001/plants \
 ## Gateway flow (Node-RED on Raspberry Pi / laptop)
 
 ```
-RPi first boot → POST /gateways/register {"name": "RPi Gateway 1"}
+RPi first boot → POST /gateways {"name": "RPi Gateway 1"}
              ← receives apiKey, stored locally in Node-RED
 
 Every 5 min  → POST /measurements  x-api-key: <stored key>
