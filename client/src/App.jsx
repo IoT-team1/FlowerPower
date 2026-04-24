@@ -23,7 +23,7 @@ function App() {
     const fetch = async () => {
       try {
         const [r, g] = await Promise.all([
-          axios.get(`${API}/readings`),
+          axios.get(`${API}/measurements`),
           axios.get(`${API}/gateways`),
         ]);
         setReadings(r.data.reverse());
@@ -75,7 +75,7 @@ function App() {
           <LineChart data={readings}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
-              dataKey="recorded_at"
+              dataKey="timestamp"
               tickFormatter={(v) => new Date(v).toLocaleTimeString()}
             />
             <YAxis yAxisId="left" domain={["auto", "auto"]} />
@@ -113,15 +113,17 @@ function App() {
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Registered</th>
+              <th>Status</th>
+              <th>Last Sync</th>
             </tr>
           </thead>
           <tbody>
             {gateways.map((g) => (
-              <tr key={g.id}>
-                <td>{g.id}</td>
+              <tr key={g._id}>
+                <td>{g._id}</td>
                 <td>{g.name}</td>
-                <td>{new Date(g.created_at).toLocaleString()}</td>
+                <td>{g.status}</td>
+                <td>{g.lastSync ? new Date(g.lastSync).toLocaleString() : "—"}</td>
               </tr>
             ))}
           </tbody>
