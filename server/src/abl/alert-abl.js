@@ -19,7 +19,7 @@ const AlertAbl = {
 
   async update(req, res) {
     try {
-      const { id } = req.params;
+      const { id } = req.params; // ID from URL
       const { isResolved } = req.body;
 
       const alert = await AlertDao.get(id);

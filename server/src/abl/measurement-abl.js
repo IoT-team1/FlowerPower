@@ -9,13 +9,13 @@ const MeasurementAbl = {
       const gatewayId = req.gatewayId; 
       const { temperature, humidity } = req.body;
 
-      // 1. Uložení měření přes DAO
+      // 1. Save measurement via DAO
       await MeasurementDao.create({ gatewayId, temperature, humidity });
 
-      // 2. Aktualizace stavu brány přes DAO
+      // 2. Update gateway status via DAO
       await GatewayDao.update(gatewayId, { lastSync: new Date(), status: "online" });
 
-      // 3. Kontrola limitů a vytváření alertů
+      // 3. Check thresholds and create alerts
       const plants = await PlantDao.list({ gatewayId });
       let alertsCreated = 0;
 
@@ -55,6 +55,22 @@ const MeasurementAbl = {
       
       const measurements = await MeasurementDao.list(filter);
       res.status(200).json(measurements);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async deleteOld(req, res) {
+    try {
+      const days = req.body.days || 30; // Default to 30 days if not provided
+      const dateLimit = new Date();
+      dateLimit.setDate(dateLimit.getDate() - days);
+
+      const result = await MeasurementDao.deleteOld(dateLimit);
+      res.status(200).json({ 
+        count: result.deletedCount, 
+        message: "Old measurements deleted successfully" 
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

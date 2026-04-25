@@ -50,7 +50,7 @@ const GatewayAbl = {
 
   async get(req, res) {
     try {
-      const { id } = req.params;
+      const { id } = req.params; // ID from URL
       const gateway = await GatewayDao.get(id);
       if (!gateway) return res.status(404).json({ error: "gatewayDoesNotExist" });
 
@@ -61,6 +61,43 @@ const GatewayAbl = {
         lastSync: gateway.lastSync,
         accessToken: gateway.accessToken
       });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async list(req, res) {
+    try {
+      const gateways = await GatewayDao.list({});
+      res.status(200).json(gateways);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async update(req, res) {
+    try {
+      const { id } = req.params; // ID from URL
+      const { name, status } = req.body;
+
+      const gateway = await GatewayDao.get(id);
+      if (!gateway) return res.status(404).json({ error: "gatewayDoesNotExist" });
+
+      const updatedGateway = await GatewayDao.update(id, { name, status });
+      res.status(200).json(updatedGateway);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params; // ID from URL
+      const gateway = await GatewayDao.get(id);
+      if (!gateway) return res.status(404).json({ error: "gatewayDoesNotExist" });
+
+      await GatewayDao.remove(id);
+      res.status(200).json({ message: "Gateway deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
