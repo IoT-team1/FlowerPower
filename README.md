@@ -66,6 +66,9 @@ Pick one of the two options below to get a connection string.
 1. Go to [MongoDB Atlas](https://cloud.mongodb.com) and open your cluster.
 2. Click **Connect → Drivers**, copy the connection string and replace `<password>`.
 3. Make sure your IP is whitelisted under **Network Access** (or add `0.0.0.0/0` for development).
+4. **Important:** Atlas copies the string without a database name — make sure `/flowerpower` is included before the `?` as shown below.
+
+> To seed and test against a throwaway database, replace `flowerpower` with `test` in the URI, run `node init-db.js`, then switch back to `flowerpower` when done. The `test` database is separate and won't affect real data.
 
 Your `.env` should look like:
 
