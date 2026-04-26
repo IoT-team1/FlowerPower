@@ -13,12 +13,19 @@ IoT plant monitoring system — tracks temperature and humidity via sensor, gate
 
 ```
 FlowerPower/
-├── server/         # Express.js API + Mongoose models
-│   ├── index.js    # API routes
-│   ├── db.js       # MongoDB connection and schemas
-│   ├── init-db.js  # One-time seed script for empty databases
-│   └── .env        # Local secrets (never commit)
-├── client/         # React + Vite frontend
+├── server/
+│   ├── index.js               # Express app entry point
+│   ├── db.js                  # MongoDB connection
+│   ├── init-db.js             # One-time seed script for empty databases
+│   ├── .env                   # Local secrets (never commit)
+│   └── src/
+│       ├── routes/            # Express routers
+│       ├── abl/               # Application business logic
+│       ├── dao/               # Database access layer
+│       ├── models/            # Mongoose schemas
+│       └── middleware/
+│           └── auth.js        # Bearer token verification
+├── client/                    # React + Vite frontend
 │   └── src/
 │       └── App.jsx
 └── README.md
@@ -131,6 +138,7 @@ VITE_API_URL=https://your-backend.onrender.com
 |--------|----------|------|----------------|
 | GET | `/ping` | None | — |
 | POST | `/gateways` | None | `gateway/create` |
+| POST | `/gateways/login` | None | `gateway/login` |
 | GET | `/gateways` | None | `gateway/list` |
 | GET | `/gateways/:id` | None | `gateway/get` |
 | PATCH | `/gateways/:id` | None | `gateway/update` |
@@ -140,13 +148,17 @@ VITE_API_URL=https://your-backend.onrender.com
 | GET | `/plants/:id` | None | `plant/get` |
 | PATCH | `/plants/:id` | None | `plant/update` |
 | DELETE | `/plants/:id` | None | `plant/delete` |
-| POST | `/measurements` | API key | `measurement/create` |
+| POST | `/measurements` | Bearer token | `measurement/create` |
 | GET | `/measurements` | None | `measurement/list` (add `?gatewayId=` to filter) |
 | DELETE | `/measurements/old` | None | `measurement/deleteOld` (add `?days=30`) |
 | GET | `/alerts` | None | `alert/list` (add `?resolved=true` for all) |
 | PATCH | `/alerts/:id` | None | `alert/update` |
 
-### Register a gateway
+### Gateway auth flow
+
+Gateways authenticate in two steps:
+
+**1. Register** (once, on first boot):
 
 ```bash
 curl -X POST http://localhost:3001/gateways \
@@ -154,14 +166,24 @@ curl -X POST http://localhost:3001/gateways \
   -d '{"name": "RPi Gateway 1"}'
 ```
 
-Response includes `apiKey` — store this on the gateway device.
+Returns `device_secret` — store this permanently on the gateway device.
+
+**2. Login** (to get a session token before sending data):
+
+```bash
+curl -X POST http://localhost:3001/gateways/login \
+  -H "Content-Type: application/json" \
+  -d '{"id": "GATEWAY_ID", "device_secret": "YOUR_DEVICE_SECRET"}'
+```
+
+Returns `accessToken` — use this as a Bearer token for submitting measurements.
 
 ### Submit a measurement
 
 ```bash
 curl -X POST http://localhost:3001/measurements \
   -H "Content-Type: application/json" \
-  -H "x-api-key: YOUR_API_KEY" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -d '{"temperature": 22.5, "humidity": 58.3}'
 ```
 
@@ -183,9 +205,12 @@ curl -X POST http://localhost:3001/plants \
 
 ```
 RPi first boot → POST /gateways {"name": "RPi Gateway 1"}
-             ← receives apiKey, stored locally in Node-RED
+             ← receives device_secret, stored permanently in Node-RED
 
-Every 5 min  → POST /measurements  x-api-key: <stored key>
+On each cycle → POST /gateways/login {"id": "...", "device_secret": "..."}
+             ← receives accessToken
+
+Every 5 min  → POST /measurements  Authorization: Bearer <accessToken>
                                    {"temperature": 22.5, "humidity": 58.3}
              ← 200 OK
 ```

@@ -6,21 +6,41 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
-const { Gateway, Measurement, Plant, Alert } = require("./db");
+const connectDB = require("./db");
+const Gateway = require("./src/models/gatewayModel");
+const Measurement = require("./src/models/measurementModel");
+const Plant = require("./src/models/plantModel");
+const Alert = require("./src/models/alertModel");
 
 async function seed() {
+  await connectDB();
   const gateway = await Gateway.create({
     name: "RPi Gateway 1",
-    apiKey: uuidv4(),
+    device_secret: uuidv4(),
     status: "online",
     lastSync: new Date(),
   });
 
   const now = new Date();
   await Measurement.insertMany([
-    { gatewayId: gateway._id, temperature: 22.5, humidity: 58.3, timestamp: now },
-    { gatewayId: gateway._id, temperature: 23.1, humidity: 57.1, timestamp: new Date(now - 5 * 60 * 1000) },
-    { gatewayId: gateway._id, temperature: 21.8, humidity: 60.2, timestamp: new Date(now - 10 * 60 * 1000) },
+    {
+      gatewayId: gateway._id,
+      temperature: 22.5,
+      humidity: 58.3,
+      timestamp: now,
+    },
+    {
+      gatewayId: gateway._id,
+      temperature: 23.1,
+      humidity: 57.1,
+      timestamp: new Date(now - 5 * 60 * 1000),
+    },
+    {
+      gatewayId: gateway._id,
+      temperature: 21.8,
+      humidity: 60.2,
+      timestamp: new Date(now - 10 * 60 * 1000),
+    },
   ]);
 
   const plant = await Plant.create({
