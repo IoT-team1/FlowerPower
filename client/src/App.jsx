@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+/*import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   LineChart,
@@ -15,7 +15,7 @@ const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 function App() {
   const [readings, setReadings] = useState([]);
-  const [gateways, setGateways] = useState([]);
+  const [gateways, setGateways] = useState([]);x
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -172,3 +172,4 @@ const styles = {
 };
 
 export default App;
+*/
