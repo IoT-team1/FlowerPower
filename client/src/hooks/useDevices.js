@@ -12,7 +12,7 @@ export function useDevices() {
       .catch(setError)
       .finally(() => setLoading(false));
   }, []);
-
+  console.log(devices)
   return { devices, loading, error };
 }
 
@@ -29,6 +29,5 @@ export function useDevice(id) {
       .catch(setError)
       .finally(() => setLoading(false));
   }, [id]);
-
   return { device, loading, error };
 }

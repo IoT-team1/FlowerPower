@@ -1,4 +1,4 @@
 import client from './client';
 
-export const getMeasurements = (deviceId, params = {}) =>
-  client.get('/measurements', { params: { deviceId, ...params } }).then((r) => r.data);
+export const getMeasurements = (gatewayId, params = {}) =>
+  client.get('/measurements', { params: { gatewayId, ...params } }).then((r) => r.data);

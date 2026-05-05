@@ -1,4 +1,4 @@
-/*import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   LineChart,
@@ -15,7 +15,7 @@ const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 function App() {
   const [readings, setReadings] = useState([]);
-  const [gateways, setGateways] = useState([]);x
+  const [gateways, setGateways] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -110,22 +110,22 @@ function App() {
         <h2 style={styles.subtitle}>Gateways</h2>
         <table style={styles.table}>
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Last Sync</th>
-            </tr>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Last Sync</th>
+          </tr>
           </thead>
           <tbody>
-            {gateways.map((g) => (
-              <tr key={g._id}>
-                <td>{g._id}</td>
-                <td>{g.name}</td>
-                <td>{g.status}</td>
-                <td>{g.lastSync ? new Date(g.lastSync).toLocaleString() : "—"}</td>
-              </tr>
-            ))}
+          {gateways.map((g) => (
+            <tr key={g._id}>
+              <td>{g._id}</td>
+              <td>{g.name}</td>
+              <td>{g.status}</td>
+              <td>{g.lastSync ? new Date(g.lastSync).toLocaleString() : "—"}</td>
+            </tr>
+          ))}
           </tbody>
         </table>
       </div>
@@ -172,4 +172,3 @@ const styles = {
 };
 
 export default App;
-*/

@@ -1,3 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  /* Barvy */
+  --color-green-50:  #EAF3DE;
+  --color-green-100: #C0DD97;
+  --color-green-700: #3B6D11;
+  --color-green-900: #27500A;
+
+  --color-amber-50:  #FAEEDA;
+  --color-amber-300: #FAC775;
+  --color-amber-700: #BA7517;
+  --color-amber-900: #854F0B;
+
+  --color-red-500:   #E24B4A;
+  --color-blue-500:  #378ADD;
+  --color-teal-600:  #1D9E75;
+
+  --color-gray-50:   #F1EFE8;
+  --color-gray-400:  #888780;
+  --color-gray-900:  #1A1A1A;
+
+  /* Typografie */
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
+  }
+}
+/*
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -109,3 +146,4 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+*/
