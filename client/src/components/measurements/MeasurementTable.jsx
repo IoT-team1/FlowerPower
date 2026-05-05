@@ -6,12 +6,13 @@ export default function MeasurementTable({ measurements, thresholds = {} }) {
     <div className="text-sm text-gray-400 py-6 text-center">Žádná měření.</div>
   );
   console.log(measurements);
+  console.log(thresholds);
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
       <table className="w-full text-sm">
         <thead>
         <tr className="border-b border-gray-100">
-          <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Čas</th>
+          <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Datum</th>
           <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Teplota</th>
           <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Vlhkost půdy</th>
         </tr>

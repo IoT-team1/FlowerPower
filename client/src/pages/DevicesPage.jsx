@@ -1,9 +1,9 @@
-import { useDevices } from '../hooks/useDevices';
+import { usePlants } from '../hooks/usePlants';
 import DeviceList from '../components/devices/DeviceList';
 import DevicesSummary from '../components/devices/DevicesSummary';
 
 export default function DevicesPage() {
-  const { devices, loading, error } = useDevices();
+  const { plants, loading, error } = usePlants();
 
   if (loading) return (
     <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
@@ -19,9 +19,9 @@ export default function DevicesPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-medium text-gray-900 mb-4 cursor-default" >Přehled zařízení</h1>
-      <DevicesSummary devices={devices} />
-      <DeviceList devices={devices} />
+      <h1 className="text-lg font-medium text-gray-900 cursor-default mb-4">Přehled zařízení</h1>
+      <DevicesSummary devices={plants} />
+      <DeviceList devices={plants} />
     </div>
   );
 }

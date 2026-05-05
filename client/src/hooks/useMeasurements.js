@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { getMeasurements } from '../api/measurements.api';
 
-export function useMeasurements(gatewayId, params = {}) {
+export function useMeasurements(plantId, params = {}) {
   const [measurements, setMeasurements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!gatewayId) return;
+    if (!plantId) return;
     setLoading(true);
-    getMeasurements(gatewayId, params)
+    getMeasurements(plantId, params)
       .then((data) => {
         console.log('useMeasurements response:', data);
         const sorted = [...data].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -17,7 +17,7 @@ export function useMeasurements(gatewayId, params = {}) {
       })
       .catch(setError)
       .finally(() => setLoading(false));
-  }, [gatewayId]);
+  }, [plantId]);
 
   return { measurements, loading, error };
 }

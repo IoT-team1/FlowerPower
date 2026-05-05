@@ -9,21 +9,24 @@ const statusConfig = {
   offline: { dot: 'bg-gray-400',  badge: 'bg-gray-100 text-gray-400',   label: 'Offline' },
 };
 
-export default function DeviceCard({ device }) {
+export default function DeviceCard({ device: plant }) {
   const navigate = useNavigate();
-  const { measurements } = useMeasurements(device._id, { limit: 1 });
-  const last = measurements[0] ?? null;
-  console.log(last);
 
-  const status = statusConfig[device.status] ?? statusConfig.offline;
-  const tempStyles = getThresholdStyles(last?.temperature, device.thresholds?.minTemp, device.thresholds?.maxTemp);
-  const humStyles  = getThresholdStyles(last?.humidity, device.thresholds?.minHum, device.thresholds?.maxHum);
+  // plant._id jako plantId
+  const { measurements } = useMeasurements(plant._id, { limit: 1 });
+  const last = measurements[0] ?? null;
+  console.log('DeviceCard last:', last);
+
+  // thresholds jsou přímo na plant objektu (minTemp, maxTemp, minHum, maxHum)
+  const tempStyles = getThresholdStyles(last?.temperature, plant.thresholds?.minTemp, plant.thresholds?.maxTemp);
+  const humStyles  = getThresholdStyles(last?.humidity, plant.thresholds?.minHum, plant.thresholds?.maxHum);
+
+  const status = statusConfig[plant.gatewayId?.status] ?? statusConfig.offline;
 
   return (
     <div
-      onClick={() => navigate(`/devices/${device._id}`)}
-      className="flex items-center gap-4 px-5 py-4 my-2 border border-white rounded-lg cursor-pointer transition-colors hover:bg-gray-100 hover:border-gray-200"
-    >
+      onClick={() => navigate(`/devices/${plant._id}`)}
+      className="flex items-center gap-4 px-5 py-4 my-2 border border-white rounded-lg cursor-pointer transition-colors hover:bg-gray-100 hover:border-gray-200"    >
       <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M12 22V12M12 12C12 12 7 8.5 5 4c3.5 0 6.5 2.5 7 8zM12 12C12 12 17 8.5 19 4c-3.5 0-6.5 2.5-7 8z"
@@ -32,9 +35,11 @@ export default function DeviceCard({ device }) {
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-gray-900">{device.name}</div>
+        <div className="text-sm font-medium text-gray-900">{plant.name}</div>
         <div className="text-xs text-gray-400 mt-0.5">
-          {device.lastSync ? formatRelativeTime(device.lastSync) : '—'}
+          {plant.gatewayId && formatRelativeTime(plant.gatewayId?.lastSync)
+            ? formatRelativeTime(plant.gatewayId?.lastSync)
+            : '—'}
         </div>
       </div>
 

@@ -6,16 +6,19 @@ const GatewayDao = require("../dao/gateway-dao");
 const MeasurementAbl = {
   async create(req, res) {
     try {
-      const gatewayId = req.gatewayId; 
+      const plantId = req.plantId;
       const { temperature, humidity } = req.body;
 
       // 1. Save measurement via DAO
-      await MeasurementDao.create({ gatewayId, temperature, humidity });
+      await MeasurementDao.create({ plantId, temperature, humidity });
 
-      // 2. Update gateway status via DAO
+      // 2. Get gatewayId from plant based on plantId
+      const gatewayId = (await PlantDao.get(plantId)).gatewayId;
+
+      // 3. Update gateway status via DAO
       await GatewayDao.update(gatewayId, { lastSync: new Date(), status: "online" });
 
-      // 3. Check thresholds and create alerts
+      // 4. Check thresholds and create alerts
       const plants = await PlantDao.list({ gatewayId });
       let alertsCreated = 0;
 
@@ -50,9 +53,14 @@ const MeasurementAbl = {
 
   async list(req, res) {
     try {
-      const { gatewayId } = req.query;
-      const filter = gatewayId ? { gatewayId } : {};
-      
+      // Filtering based on gatewayID - uncomment below if needed
+      // const { gatewayId } = req.query;
+      // const filter = gatewayId ? { gatewayId } : {};
+
+      // Filtering based on plantId
+      const { plantId } = req.query;
+      const filter = plantId ? { plantId } : {};
+
       const measurements = await MeasurementDao.list(filter);
       res.status(200).json(measurements);
     } catch (error) {

@@ -8,7 +8,7 @@ export default function Header() {
         <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"> <path d="M12 22V12M12 12C12 12 7 8.5 5 4c3.5 0 6.5 2.5 7 8zM12 12C12 12 17 8.5 19 4c-3.5 0-6.5 2.5-7 8z" stroke="#3B6D11" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/> <path d="M12 12C12 12 9 15 9 18c0 1.66 1.34 3 3 3s3-1.34 3-3c0-3-3-6-3-6z" stroke="#3B6D11" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/> </svg>
         </div>
-        <span className="text-base font-medium text-gray-900">
+        <span className="text-base font-medium text-gray-900 cursor-default">
           Flower<span className="text-green-700">Power</span>
         </span>
       </div>

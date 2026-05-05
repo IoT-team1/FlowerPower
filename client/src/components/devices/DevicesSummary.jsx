@@ -1,8 +1,8 @@
 export default function DevicesSummary({ devices }) {
   const total   = devices.length;
-  const online  = devices.filter((d) => d.status === 'online').length;
-  const warning = devices.filter((d) => d.status === 'warning').length;
-  const offline = devices.filter((d) => d.status === 'offline').length;
+  const online  = devices.filter((d) => d.gatewayId?.status === 'online').length;
+  const warning = devices.filter((d) => d.gatewayId?.status === 'warning').length;
+  const offline = devices.filter((d) => d.gatewayId?.status === 'offline').length;
 
   const tiles = [
     { label: 'Celkem zařízení', value: total,   valueClass: 'text-gray-900' },

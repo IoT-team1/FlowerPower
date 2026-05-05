@@ -1,0 +1,19 @@
+{
+  "gateway": {
+    "name": "RPi Gateway 1"
+  },
+  "plants": [
+    {
+      "name": "Ficus",
+      "thresholds": { "minTemp": 18, "maxTemp": 28, "minHum": 40, "maxHum": 70 }
+    },
+    {
+      "name": "Monstera",
+      "thresholds": { "minTemp": 19, "maxTemp": 30, "minHum": 45, "maxHum": 75 }
+    },
+    {
+      "name": "Basil",
+      "thresholds": { "minTemp": 17, "maxTemp": 26, "minHum": 50, "maxHum": 80 }
+    }
+  ]
+}

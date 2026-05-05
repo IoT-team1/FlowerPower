@@ -1,33 +1,34 @@
 import { useState, useEffect } from 'react';
-import { getDevices, getDevice } from '../api/devices.api';
+import { getPlants, getPlant } from '../api/plants.api';
 
-export function useDevices() {
-  const [devices, setDevices] = useState([]);
+export function usePlants() {
+  const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getDevices()
-      .then(setDevices)
+    getPlants()
+      .then(setPlants)
       .catch(setError)
       .finally(() => setLoading(false));
   }, []);
-  console.log(devices)
-  return { devices, loading, error };
+
+  return { plants, loading, error };
 }
 
-export function useDevice(id) {
-  const [device, setDevice] = useState(null);
+export function usePlant(id) {
+  const [plant, setPlant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    getDevice(id)
-      .then(setDevice)
+    getPlant(id)
+      .then(setPlant)
       .catch(setError)
       .finally(() => setLoading(false));
   }, [id]);
-  return { device, loading, error };
+
+  return { plant, loading, error };
 }

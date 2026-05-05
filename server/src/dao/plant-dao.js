@@ -9,12 +9,12 @@ const PlantDao = {
 
   // Retrieve a list of plants, optionally filtered by gatewayId
   async list(filter) {
-    return await Plant.find(filter);
+    return await Plant.find(filter).populate('gatewayId');
   },
 
   // Get detailed information about a specific plant
   async get(id) {
-    return await Plant.findById(id);
+    return await Plant.findById(id).populate('gatewayId');
   },
 
   // Update plant metadata or thresholds
