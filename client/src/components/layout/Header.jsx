@@ -1,6 +1,11 @@
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-
+import { useAlerts } from "../../hooks/useAlerts.js";
+import AlertPanel from '../alerts/AlertPanel';
 export default function Header() {
+  const [panelOpen, setPanelOpen] = useState(false);
+  const { alerts, unreadCount, resolve } = useAlerts();
+
   return (
     <header className="h-14 px-6 bg-white border-b border-gray-200 flex items-center justify-between sticky top-0 z-50">
 
@@ -35,7 +40,26 @@ export default function Header() {
       </nav>
 
       <div className="flex-1 flex items-center justify-end gap-2">
-        {/* sem přidat alert bell */}
+        {/* Alert Bell */}
+        <div className="relative">
+          <button
+            onClick={() => setPanelOpen((o) => !o)}
+            className="w-8 h-8 rounded-lg border border-gray-200 flex items-center cursor-pointer justify-center hover:bg-gray-100 transition-colors relative"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-600 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </button>
+
+          {panelOpen && (
+            <AlertPanel alerts = {alerts} resolve = {resolve} onClose={() => setPanelOpen(false)} />
+          )}
+        </div>
         <div className="w-8 h-8 rounded-full bg-green-50 border border-gray-200 flex items-center justify-center text-xs font-medium text-green-700 cursor-pointer">
           JP
         </div>

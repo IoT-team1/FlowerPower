@@ -7,6 +7,9 @@ const alertSchema = new mongoose.Schema({
     ref: "Plant", 
     required: true 
   },
+
+  //Name of the plant for display purposes
+  plantName: { type: String, required: true },
   
   // Detailed message describing the issue
   message: { type: String, required: true },

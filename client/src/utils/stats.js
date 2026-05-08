@@ -1,5 +1,5 @@
 /**
- * Vypočítá průměr, min a max z pole hodnot
+ * Counts average, min and max values for a given key
  */
 export const calcStats = (measurements, key) => {
   const values = measurements
@@ -16,7 +16,7 @@ export const calcStats = (measurements, key) => {
 };
 
 /**
- * Filtruje měření podle časového rozsahu
+ * Filtering measurements by time range
  * @param {'24h' | '7d' | '30d'} range
  */
 export const filterByRange = (measurements, range) => {

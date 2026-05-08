@@ -1,6 +1,6 @@
 import {
   ResponsiveContainer, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Legend,
+  XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine,
 } from 'recharts';
 import { formatChartTime } from '../../utils/formatters';
 

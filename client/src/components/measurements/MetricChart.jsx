@@ -31,13 +31,15 @@ export default function MetricChart({ measurements, thresholds = {} }) {
 
   const tab = tabs.find((t) => t.key === activeTab);
 
-  const chartData = [...measurements]
+  const chartData = measurements
+    .slice(0,10)
     .reverse()
     .map((m) => ({
       time: formatChartTime(m.timestamp),
       value: m[activeTab],
     }));
 
+  console.log("chartData", chartData)
   const minThreshold = activeTab === 'temperature' ? thresholds.minTemp : thresholds.minHum;
   const maxThreshold = activeTab === 'temperature' ? thresholds.maxTemp : thresholds.maxHum;
 

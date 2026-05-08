@@ -1,5 +1,5 @@
 /**
- * Formátování datumu a času
+ * Date and time formatting
  * new Date(m.createdAt) → "12. 5. 2025, 14:20"
  */
 export const formatDateTime = (date) => {
@@ -16,8 +16,8 @@ export const formatDateTime = (date) => {
 };
 
 /**
- * Relativní čas
- * před 8 minutami, před 2 hodinami, včera...
+ * Relative time formatting
+ *
  */
 export const formatRelativeTime = (date) => {
   const diff = Date.now() - new Date(date).getTime();
@@ -33,28 +33,13 @@ export const formatRelativeTime = (date) => {
 };
 
 /**
- * Formátování hodnoty senzoru
- * null / undefined → "—"
- */
-export const formatValue = (value, unit) =>
-  value != null ? `${value}${unit}` : '—';
-
-/**
- * Formátování teploty
- */
-export const formatTemp = (value) => formatValue(value, '°C');
-
-/**
- * Formátování vlhkosti
- */
-export const formatHumidity = (value) => formatValue(value, '%');
-
-/**
- * Formátování grafů
+ * Charts time formatting
  */
 export const formatChartTime = (timestamp) => {
   if (!timestamp) return '';
   return new Date(timestamp).toLocaleTimeString('cs-CZ', {
+    month: 'short',
+    day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
   });

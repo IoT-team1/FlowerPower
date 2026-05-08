@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 const connectDB = require("./db");
 
+
 const app = express();
 
 // Middleware configuration
@@ -17,12 +18,14 @@ const gatewayRoutes = require("./src/routes/gatewayRoutes");
 const plantRoutes = require("./src/routes/plantRoutes");
 const measurementRoutes = require("./src/routes/measurementRoutes");
 const alertRoutes = require("./src/routes/alertRoutes");
+const sseRoutes = require("./src/routes/sseRoutes");
 
 // Register API routes
 app.use("/gateways", gatewayRoutes);
 app.use("/plants", plantRoutes);
 app.use("/measurements", measurementRoutes);
 app.use("/alerts", alertRoutes);
+app.use("/sse", sseRoutes);
 
 // Basic health check endpoints
 app.get("/", (req, res) => res.json({ status: "ok" }));

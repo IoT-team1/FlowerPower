@@ -1,4 +1,3 @@
-import { calcStats } from '../../utils/stats';
 import { getThresholdStyles } from '../../utils/thresholds';
 
 function StatCard({ label, current, min, max, unit, thresholdStyles }) {

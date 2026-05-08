@@ -12,12 +12,10 @@ const statusConfig = {
 export default function DeviceCard({ device: plant }) {
   const navigate = useNavigate();
 
-  // plant._id jako plantId
   const { measurements } = useMeasurements(plant._id, { limit: 1 });
   const last = measurements[0] ?? null;
   console.log('DeviceCard last:', last);
 
-  // thresholds jsou přímo na plant objektu (minTemp, maxTemp, minHum, maxHum)
   const tempStyles = getThresholdStyles(last?.temperature, plant.thresholds?.minTemp, plant.thresholds?.maxTemp);
   const humStyles  = getThresholdStyles(last?.humidity, plant.thresholds?.minHum, plant.thresholds?.maxHum);
 

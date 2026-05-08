@@ -2,26 +2,34 @@ import { useState, useMemo } from 'react';
 import { usePlants } from '../hooks/usePlants';
 import { useHistoryMeasurements } from '../hooks/useHistoryMeasurements';
 import { filterByRange } from '../utils/stats';
+import { useAlertHistory } from '../hooks/useAlertHistory';
 import RangeSelector from '../components/history/RangeSelector';
 import HistoryStatsGrid from '../components/history/HistoryStatsGrid';
 import HistoryChart from '../components/history/HistoryChart';
 import MeasurementTable from '../components/measurements/MeasurementTable';
+import AlertsChart from '../components/history/AlertsChart';
+import AlertsLog from '../components/history/AlertsLog';
 
 export default function HistoryPage() {
   const { plants, loading: plantsLoading } = usePlants();
   const [selectedPlantId, setSelectedPlantId] = useState('');
   const [range, setRange] = useState('24h');
 
-  const { measurements, loading: measLoading } = useHistoryMeasurements(selectedPlantId);
+  const { measurements, loading: measLoading }  = useHistoryMeasurements(selectedPlantId);
+  const { alerts, loading: alertsLoading }       = useAlertHistory(selectedPlantId);
 
   const selectedPlant = plants.find((p) => p._id === selectedPlantId) ?? null;
   console.log('Selected plant:', selectedPlant);
 
-  const filtered = useMemo(
+  const filteredMeasurements = useMemo(
     () => filterByRange(measurements, range),
     [measurements, range]
   );
 
+  const filteredAlerts = useMemo(
+    () => filterByRange(alerts, range),
+    [alerts, range]
+  );
   const thresholds = selectedPlant
     ? {
       minTemp: selectedPlant.thresholds?.minTemp,
@@ -30,7 +38,7 @@ export default function HistoryPage() {
       maxHum:  selectedPlant.thresholds?.maxHum,
     }
     : {};
-
+  console.log("filteredAlerts:", filteredAlerts)
   return (
     <div>
       {/* Toolbar */}
@@ -51,7 +59,7 @@ export default function HistoryPage() {
         </div>
       </div>
 
-      {/* Prázdný stav – nevybraná rostlina */}
+      {/* No plant selected */}
       {!selectedPlantId && (
         <div className="flex flex-col items-center justify-center h-64 gap-2 text-gray-400">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -68,20 +76,33 @@ export default function HistoryPage() {
         </div>
       )}
 
-      {/* Data */}
-      {selectedPlantId && !measLoading && (
+      {selectedPlantId && (
         <>
-          <HistoryStatsGrid measurements={filtered} />
-          <HistoryChart measurements={filtered} thresholds={thresholds} />
-          <h2 className="text-sm font-medium text-gray-900 mb-3">
-            Měření ({filtered.length})
-          </h2>
-          <MeasurementTable
-            measurements={filtered}
-            thresholds={thresholds}
-          />
+        {/* Measurements */}
+        {measLoading ? (
+          <div className="text-sm text-gray-400 mb-6">Načítání měření...</div>
+        ) : (
+          <>
+            <HistoryStatsGrid measurements={filteredMeasurements} />
+            <HistoryChart measurements={filteredMeasurements} thresholds={thresholds} />
+            <h2 className="text-sm font-medium text-gray-900 mb-3">
+              Měření ({filteredMeasurements.length})
+            </h2>
+            <MeasurementTable
+              measurements={filteredMeasurements}
+              thresholds={thresholds}
+            />
+          </>
+        )}
+
+      {/* Alerts */}
+      <div className="mt-8">
+        <h2 className="text-sm font-medium text-gray-900 mb-3">Historie alertů</h2>
+        <AlertsChart alerts={filteredAlerts} />
+        <AlertsLog alerts={filteredAlerts} loading={alertsLoading} />
+      </div>
         </>
-      )}
+        )}
     </div>
   );
 }

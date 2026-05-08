@@ -4,7 +4,7 @@
 // Set MONGODB_URI in server/.env before running.
 
 /**
- * Test database initialization, need to edit .env file and run in /server node init-db.js
+ * Test database initialization, need to edit .env file to 'test' and run in /server 'node init-db.js'
  */
 
 require("dotenv").config();
@@ -136,8 +136,10 @@ seed().catch((err) => {
   process.exit(1);
 });
 
-// Old database initialization
-/*
+/**
+ * Old database initialization
+
+// FlowerPower DB Seed
 require("dotenv").config();
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");

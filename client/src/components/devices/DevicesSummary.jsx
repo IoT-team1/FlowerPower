@@ -1,7 +1,8 @@
-export default function DevicesSummary({ devices }) {
+export default function DevicesSummary({ devices, alerts }) {
+
   const total   = devices.length;
   const online  = devices.filter((d) => d.gatewayId?.status === 'online').length;
-  const warning = devices.filter((d) => d.gatewayId?.status === 'warning').length;
+  const warning = alerts.length;
   const offline = devices.filter((d) => d.gatewayId?.status === 'offline').length;
 
   const tiles = [

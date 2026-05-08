@@ -1,4 +1,5 @@
 const AlertDao = require("../dao/alert-dao");
+const SseManager = require("../sevices/sseManager");
 
 const AlertAbl = {
   async list(req, res) {
@@ -8,6 +9,9 @@ const AlertAbl = {
       
       if (resolved !== undefined) {
         filter.isResolved = resolved === 'true';
+      }
+      if (req.query.plantId !== undefined) {
+        filter.plantId = req.query.plantId;
       }
 
       const alerts = await AlertDao.list(filter);
@@ -31,6 +35,14 @@ const AlertAbl = {
       }
       
       const updatedAlert = await AlertDao.update(id, updateData);
+
+      // Broadcast the update to connected clients
+      if (updateData.isResolved === true) {
+        SseManager.broadcast('alertResolved', {
+          alertId: id,
+          plantId: alert.plantId,
+        });
+      }
       res.status(200).json(updatedAlert);
     } catch (error) {
       res.status(500).json({ error: error.message });

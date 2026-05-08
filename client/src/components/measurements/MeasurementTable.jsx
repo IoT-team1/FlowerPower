@@ -9,16 +9,17 @@ export default function MeasurementTable({ measurements, thresholds = {} }) {
   console.log(thresholds);
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-      <table className="w-full text-sm">
-        <thead>
-        <tr className="border-b border-gray-100">
-          <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Datum</th>
-          <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Teplota</th>
-          <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Vlhkost půdy</th>
-        </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-        {measurements.map((m) => {
+      <div className="max-h-[440px] overflow-y-auto">
+        <table className="w-full text-sm">
+          <thead className="sticky top-0 bg-white">
+          <tr className="border-b border-gray-100">
+            <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Datum</th>
+            <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Teplota</th>
+            <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Vlhkost půdy</th>
+          </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+          {measurements.map((m) => {
           const tempStyles = getThresholdStyles(m.temperature, thresholds.minTemp, thresholds.maxTemp);
           const humStyles  = getThresholdStyles(m.humidity, thresholds.minHum, thresholds.maxHum);
 
@@ -32,6 +33,7 @@ export default function MeasurementTable({ measurements, thresholds = {} }) {
         })}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
