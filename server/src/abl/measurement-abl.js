@@ -2,7 +2,7 @@ const MeasurementDao = require("../dao/measurement-dao");
 const PlantDao = require("../dao/plant-dao");
 const AlertDao = require("../dao/alert-dao");
 const GatewayDao = require("../dao/gateway-dao");
-const SseManager = require("../sevices/sseManager");
+const SseManager = require("../sevises/sseManager");
 
 const MeasurementAbl = {
   async create(req, res) {

@@ -1,5 +1,5 @@
 const AlertDao = require("../dao/alert-dao");
-const SseManager = require("../sevices/sseManager");
+const SseManager = require("../sevises/sseManager");
 
 const AlertAbl = {
   async list(req, res) {
