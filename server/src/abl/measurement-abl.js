@@ -7,10 +7,10 @@ const MeasurementAbl = {
   async create(req, res) {
     try {
       const gatewayId = req.gatewayId; 
-      const { temperature, humidity } = req.body;
+      const { temperature, humidity, moisture } = req.body;
 
       // 1. Save measurement via DAO
-      await MeasurementDao.create({ gatewayId, temperature, humidity });
+      await MeasurementDao.create({ gatewayId, temperature, humidity, moisture });
 
       // 2. Update gateway status via DAO
       await GatewayDao.update(gatewayId, { lastSync: new Date(), status: "online" });
