@@ -79,6 +79,11 @@ export default function MetricChart({ measurements, thresholds = {} }) {
         </div>
       </div>
 
+      {chartData.length === 0 ? (
+        <div className="flex items-center justify-center h-48 text-sm text-gray-400">
+          Žádná data k zobrazení.
+        </div>
+      ) : (
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -123,6 +128,7 @@ export default function MetricChart({ measurements, thresholds = {} }) {
           />
         </LineChart>
       </ResponsiveContainer>
+      )}
 
       {(minThreshold != null || maxThreshold != null) && (
         <div className="flex gap-4 mt-2 justify-end">

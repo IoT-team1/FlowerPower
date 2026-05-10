@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAlertStore } from '../../store/alerts.store';
+import {useAlerts} from "../../hooks/useAlerts.js";
 
 function ToastItem({ alert, onClose }) {
   useEffect(() => {
@@ -25,14 +25,14 @@ function ToastItem({ alert, onClose }) {
 }
 
 export default function Toast() {
-  const alerts = useAlertStore((s) => s.alerts);
+  const {alerts} = useAlerts()
   const [visible, setVisible] = useState([]);
 
   useEffect(() => {
     const latest = alerts[0];
     if (!latest || visible.find((v) => v._id === latest.alertId)) return;
     const toastAlert = { ...latest, _id: latest.alertId };
-    setVisible((prev) => [toastAlert, ...prev].slice(0, 3));
+    setVisible((prev) => [toastAlert, ...prev].slice(0, 2));
   }, [alerts]);
 
   const remove = (id) => setVisible((prev) => prev.filter((v) => v._id !== id));

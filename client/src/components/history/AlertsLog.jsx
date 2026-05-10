@@ -5,11 +5,8 @@ const typeConfig = {
   info:    { dot: 'bg-blue-500',  badge: 'bg-blue-50 text-blue-900',   label: 'info' },
 };
 
-export default function AlertsLog({ alerts, loading }) {
+export default function AlertsLog({ alerts }) {
 
-  if (loading) return (
-    <div className="text-sm text-gray-400 py-6 text-center">Načítání alertů...</div>
-  );
 
   if (!alerts.length) return (
     <div className="bg-white border border-gray-200 rounded-xl px-5 py-8 text-sm text-gray-400 text-center">
