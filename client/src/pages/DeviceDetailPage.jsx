@@ -18,14 +18,18 @@ export default function DeviceDetailPage() {
     maxTemp: plant.thresholds?.maxTemp,
     minHum:  plant.thresholds?.minHum,
     maxHum:  plant.thresholds?.maxHum,
+    minMoist: plant.thresholds?.minMoist,
+    maxMoist: plant.thresholds?.maxMoist,
   } : {};
 
   const last = measurements[0];
   const localAlerts = last ? [
     getThresholdStatus(last.temperature, thresholds.minTemp, thresholds.maxTemp) === 'low'  && `Teplota je příliš nízká (${last.temperature}°C, min. ${thresholds.minTemp}°C)`,
     getThresholdStatus(last.temperature, thresholds.minTemp, thresholds.maxTemp) === 'high' && `Teplota je příliš vysoká (${last.temperature}°C, max. ${thresholds.maxTemp}°C)`,
-    getThresholdStatus(last.humidity, thresholds.minHum, thresholds.maxHum) === 'low'       && `Vlhkost půdy je příliš nízká (${last.humidity}%, min. ${thresholds.minHum}%)`,
-    getThresholdStatus(last.humidity, thresholds.minHum, thresholds.maxHum) === 'high'      && `Vlhkost půdy je příliš vysoká (${last.humidity}%, max. ${thresholds.maxHum}%)`,
+    getThresholdStatus(last.moisture, thresholds.minMoist, thresholds.maxMoist) === 'low'       && `Vlhkost půdy je příliš nízká (${last.moisture}%, min. ${thresholds.minMoist}%)`,
+    getThresholdStatus(last.moisture, thresholds.minMoist, thresholds.maxMoist) === 'high'      && `Vlhkost půdy je příliš vysoká (${last.moisture}%, max. ${thresholds.maxMoist}%)`,
+    getThresholdStatus(last.humidity, thresholds.minHum, thresholds.maxHum) === 'low'       && `Vlhkost vzduchu je příliš nízká (${last.humidity}%, min. ${thresholds.minHum}%)`,
+    getThresholdStatus(last.humidity, thresholds.minHum, thresholds.maxHum) === 'high'      && `Vlhkost vzduchu je příliš vysoká (${last.humidity}%, max. ${thresholds.maxHum}%)`,
   ].filter(Boolean) : [];
 
   console.log('Plant:', plant);
@@ -73,7 +77,7 @@ export default function DeviceDetailPage() {
                   <path d="M5 2v3M5 7v.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
                 </svg>
               </div>
-              <span className="text-sm text-amber-900">{message}</span>
+              <span className="text-sm text-gray-900">{message}</span>
             </div>
           ))}
         </div>

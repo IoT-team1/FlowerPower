@@ -10,10 +10,10 @@ function StatCard({ label, current, min, max, unit, thresholdStyles }) {
       </div>
       <div className="flex gap-3 mt-2">
         <span className="text-xs text-gray-400">
-          min <span className="text-blue-500 font-medium">{min != null ? `${min}${unit}` : '—'}</span>
+          min <span className="text-gray-900 font-medium">{min != null ? `${min}${unit}` : '—'}</span>
         </span>
         <span className="text-xs text-gray-400">
-          max <span className="text-red-500 font-medium">{max != null ? `${max}${unit}` : '—'}</span>
+          max <span className="text-gray-900 font-medium">{max != null ? `${max}${unit}` : '—'}</span>
         </span>
       </div>
       <span className={`inline-block mt-2 text-xs px-2 py-0.5 rounded-full font-medium ${thresholdStyles.badge}`}>
@@ -29,9 +29,10 @@ export default function StatsGrid({ measurements, thresholds = {} }) {
 
   const tempStyles = getThresholdStyles(last?.temperature, thresholds.minTemp, thresholds.maxTemp);
   const humStyles  = getThresholdStyles(last?.humidity, thresholds.minHum, thresholds.maxHum);
-  console.log("temp styles",tempStyles);
+  const moistStyles = getThresholdStyles(last?.moisture, thresholds.minMoist, thresholds.maxMoist);
+  console.log("ŽŽŽŽŽŽ", thresholds);
   return (
-    <div className="grid grid-cols-2 gap-3 mb-6">
+    <div className="grid grid-cols-3 gap-3 mb-6">
       <StatCard
         label="Aktuální teplota"
         unit="°C"
@@ -42,6 +43,14 @@ export default function StatsGrid({ measurements, thresholds = {} }) {
       />
       <StatCard
         label="Aktuální vlhkost půdy"
+        unit="%"
+        current={last?.moisture}
+        min={thresholds.minMoist}
+        max={thresholds.maxMoist}
+        thresholdStyles={moistStyles}
+      />
+      <StatCard
+        label="Aktuální vlhkost vzduchu"
         unit="%"
         current={last?.humidity}
         min={thresholds.minHum}

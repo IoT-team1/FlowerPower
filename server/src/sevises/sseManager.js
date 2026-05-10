@@ -20,7 +20,7 @@ class SseManager {
       res.write(`event: alert\ndata: ${JSON.stringify({
         _id: alert._id,
         plantId: alert.plantId,
-        plantName: alert.plantId?.name ?? '',
+        plantName: alert.plantName,
         message: alert.message,
         level: alert.level,
         isResolved: alert.isResolved,

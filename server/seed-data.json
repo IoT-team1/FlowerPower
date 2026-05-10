@@ -5,15 +5,15 @@
   "plants": [
     {
       "name": "Ficus",
-      "thresholds": { "minTemp": 18, "maxTemp": 28, "minHum": 40, "maxHum": 70 }
+      "thresholds": { "minTemp": 18, "maxTemp": 28, "minHum": 40, "maxHum": 70, "minMoist": 30, "maxMoist": 90 }
     },
     {
       "name": "Monstera",
-      "thresholds": { "minTemp": 19, "maxTemp": 30, "minHum": 45, "maxHum": 75 }
+      "thresholds": { "minTemp": 19, "maxTemp": 30, "minHum": 45, "maxHum": 75, "minMoist": 25, "maxMoist": 85 }
     },
     {
       "name": "Basil",
-      "thresholds": { "minTemp": 17, "maxTemp": 26, "minHum": 50, "maxHum": 80 }
+      "thresholds": { "minTemp": 17, "maxTemp": 26, "minHum": 50, "maxHum": 80, "minMoist": 20, "maxMoist": 80 }
     }
   ]
 }

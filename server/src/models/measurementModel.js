@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const measurementSchema = new mongoose.Schema({
   // Reference to the Gateway that submitted the reading
-  //gatewayId: {
-  //  type: mongoose.Schema.Types.ObjectId,
-  //  ref: "Gateway",
-  //  required: true
-  // },
+  gatewayId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Gateway",
+    required: true
+   },
 
   // Reference to plant that this measurement belongs to,
   plantId: {

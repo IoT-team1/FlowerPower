@@ -16,7 +16,9 @@ const plantSchema = new mongoose.Schema({
     minTemp: { type: Number, required: true },
     maxTemp: { type: Number, required: true },
     minHum: { type: Number, required: true },
-    maxHum: { type: Number, required: true }
+    maxHum: { type: Number, required: true },
+    minMoist: { type: Number, required: true },
+    maxMoist: { type: Number, required: true },
   }
 });
 

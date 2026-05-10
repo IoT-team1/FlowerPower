@@ -1,7 +1,3 @@
-// FlowerPower DB Seed
-// Run once to seed a fresh MongoDB database:
-//   node server/init-db.js
-// Set MONGODB_URI in server/.env before running.
 
 /**
  * Test database initialization, need to edit .env file to 'test' and run in /server 'node init-db.js'
@@ -21,7 +17,6 @@ const Plant = require("./src/models/plantModel");
 const seedData = JSON.parse(
   fs.readFileSync(path.join(__dirname, "seed-data.json"), "utf-8")
 );
-
 // helper: random number
 const rand = (min, max) => Math.random() * (max - min) + min;
 
@@ -31,17 +26,19 @@ function randomDate(from, to) {
 }
 
 // generate measurement
-function createMeasurement(plantId, timestamp) {
+function createMeasurement(gatewayId, plantId, timestamp) {
   return {
+    gatewayId,
     plantId,
     temperature: parseFloat(rand(12, 35).toFixed(1)),
     humidity: parseFloat(rand(30, 90).toFixed(1)),
+    moisture: parseFloat(rand(10, 90).toFixed(1)),
     timestamp
   };
 }
 
 // generator per plant
-function generateMeasurements(plantId) {
+function generateMeasurements(gatewayId, plantId) {
   const now = new Date();
 
   const last100min = 100 * 60 * 1000;
@@ -55,6 +52,7 @@ function generateMeasurements(plantId) {
   for (let i = 0; i < 10; i++) {
     measurements.push(
       createMeasurement(
+        gatewayId,
         plantId,
         randomDate(new Date(now - last7d), now)
       )
@@ -65,6 +63,7 @@ function generateMeasurements(plantId) {
   for (let i = 0; i < 10; i++) {
     measurements.push(
       createMeasurement(
+        gatewayId,
         plantId,
         randomDate(new Date(now - last24h), now)
       )
@@ -75,6 +74,7 @@ function generateMeasurements(plantId) {
   for (let i = 0; i < 20; i++) {
     measurements.push(
       createMeasurement(
+        gatewayId,
         plantId,
         randomDate(new Date(now - last30d), now)
       )
@@ -85,6 +85,7 @@ function generateMeasurements(plantId) {
   for (let i = 0; i < 10; i++) {
     measurements.push(
       createMeasurement(
+        gatewayId,
         plantId,
         randomDate(new Date(now - last100min), now)
       )
@@ -117,7 +118,7 @@ async function seed() {
       thresholds: plantData.thresholds
     });
 
-    const measurements = generateMeasurements(plant._id);
+    const measurements = generateMeasurements(gateway._id, plant._id);
     allMeasurements.push(...measurements);
   }
 

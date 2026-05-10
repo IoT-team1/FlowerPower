@@ -12,8 +12,10 @@ import {
 import { formatChartTime } from '../../utils/formatters';
 
 const tabs = [
-  { key: 'temperature', label: 'Teplota',      unit: '°C', color: '#378ADD' },
-  { key: 'humidity',    label: 'Vlhkost půdy', unit: '%',  color: '#BA7517' },
+  { key: 'temperature', label: 'Teplota',      unit: '°C', color: '#134087' },
+  { key: 'moisture',    label: 'Vlhkost půdy', unit: '%',  color: '#BA7517' },
+  { key: 'humidity',    label: 'Vlhkost vzduchu', unit: '%',  color: '#085319' },
+
 ];
 
 const CustomTooltip = ({ active, payload, label, unit }) => {
@@ -40,9 +42,22 @@ export default function MetricChart({ measurements, thresholds = {} }) {
     }));
 
   console.log("chartData", chartData)
-  const minThreshold = activeTab === 'temperature' ? thresholds.minTemp : thresholds.minHum;
-  const maxThreshold = activeTab === 'temperature' ? thresholds.maxTemp : thresholds.maxHum;
-
+  const minThreshold =
+    activeTab === 'temperature'
+      ? thresholds.minTemp
+      : activeTab === 'humidity'
+        ? thresholds.minHum
+        : activeTab === 'moisture'
+          ? thresholds.minMoist
+          : null;
+  const maxThreshold =
+    activeTab === 'temperature'
+      ? thresholds.maxTemp
+      : activeTab === 'humidity'
+        ? thresholds.maxHum
+        : activeTab === 'moisture'
+          ? thresholds.maxMoist
+          : null;
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -84,7 +99,7 @@ export default function MetricChart({ measurements, thresholds = {} }) {
           {minThreshold != null && (
             <ReferenceLine
               y={minThreshold}
-              stroke="#E24B4A"
+              stroke="#888780"
               strokeDasharray="4 3"
               strokeWidth={1}
             />
@@ -92,7 +107,7 @@ export default function MetricChart({ measurements, thresholds = {} }) {
           {maxThreshold != null && (
             <ReferenceLine
               y={maxThreshold}
-              stroke="#888780"
+              stroke="#E24B4A"
               strokeDasharray="4 3"
               strokeWidth={1}
             />
@@ -103,7 +118,7 @@ export default function MetricChart({ measurements, thresholds = {} }) {
             dataKey="value"
             stroke={tab.color}
             strokeWidth={1.5}
-            dot={false}
+            dot={ { r: 2, fill: "#134087"}}
             activeDot={{ r: 3 }}
           />
         </LineChart>
@@ -113,13 +128,13 @@ export default function MetricChart({ measurements, thresholds = {} }) {
         <div className="flex gap-4 mt-2 justify-end">
           {minThreshold != null && (
             <span className="text-xs text-gray-400 flex items-center gap-1">
-              <span className="inline-block w-4 border-t border-dashed border-red-500" />
+              <span className="inline-block w-4 border-t border-dashed border-gray-400" />
               min {minThreshold}{tab.unit}
             </span>
           )}
           {maxThreshold != null && (
             <span className="text-xs text-gray-400 flex items-center gap-1">
-              <span className="inline-block w-4 border-t border-dashed border-gray-400" />
+              <span className="inline-block w-4 border-t border-dashed border-red-500" />
               max {maxThreshold}{tab.unit}
             </span>
           )}

@@ -40,7 +40,7 @@ export const formatChartTime = (timestamp) => {
   return new Date(timestamp).toLocaleTimeString('cs-CZ', {
     month: 'short',
     day: 'numeric',
-    hour: '2-digit',
+    hour: "2-digit",
     minute: '2-digit',
   });
 };

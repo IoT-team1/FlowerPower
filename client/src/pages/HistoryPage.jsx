@@ -36,6 +36,8 @@ export default function HistoryPage() {
       maxTemp: selectedPlant.thresholds?.maxTemp,
       minHum:  selectedPlant.thresholds?.minHum,
       maxHum:  selectedPlant.thresholds?.maxHum,
+      minMoist: selectedPlant.thresholds?.minMoist,
+      maxMoist: selectedPlant.thresholds?.maxMoist,
     }
     : {};
   console.log("filteredAlerts:", filteredAlerts)
@@ -84,7 +86,7 @@ export default function HistoryPage() {
         ) : (
           <>
             <HistoryStatsGrid measurements={filteredMeasurements} />
-            <HistoryChart measurements={filteredMeasurements} thresholds={thresholds} />
+            <HistoryChart measurements={filteredMeasurements} thresholds={thresholds} range={range}/>
             <h2 className="text-sm font-medium text-gray-900 mb-3">
               Měření ({filteredMeasurements.length})
             </h2>

@@ -18,6 +18,7 @@ export default function DeviceCard({ device: plant }) {
 
   const tempStyles = getThresholdStyles(last?.temperature, plant.thresholds?.minTemp, plant.thresholds?.maxTemp);
   const humStyles  = getThresholdStyles(last?.humidity, plant.thresholds?.minHum, plant.thresholds?.maxHum);
+  const moistStyles = getThresholdStyles(last?.moisture, plant.thresholds?.minMoist, plant.thresholds?.maxMoist);
 
   const status = statusConfig[plant.gatewayId?.status] ?? statusConfig.offline;
 
@@ -49,11 +50,18 @@ export default function DeviceCard({ device: plant }) {
           <div className="text-xs text-gray-400">teplota</div>
         </div>
         <div className="text-right">
+        <div className={`text-sm font-medium ${moistStyles.text}`}>
+          {last?.moisture != null ? `${last.moisture}%` : '—'}
+        </div>
+        <div className="text-xs text-gray-400">vlhkost půdy</div>
+      </div>
+        <div className="text-right">
           <div className={`text-sm font-medium ${humStyles.text}`}>
             {last?.humidity != null ? `${last.humidity}%` : '—'}
           </div>
-          <div className="text-xs text-gray-400">vlhkost půdy</div>
+          <div className="text-xs text-gray-400">vlhkost vzduchu</div>
         </div>
+
       </div>
 
       <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${status.badge}`}>

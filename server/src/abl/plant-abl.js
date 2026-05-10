@@ -9,7 +9,7 @@ const PlantAbl = {
       const gateway = await GatewayDao.get(gatewayId);
       if (!gateway) return res.status(404).json({ error: "gatewayDoesNotExist" });
 
-      if (thresholds.minTemp >= thresholds.maxTemp || thresholds.minHum >= thresholds.maxHum) {
+      if (thresholds.minTemp >= thresholds.maxTemp || thresholds.minHum >= thresholds.maxHum || thresholds.minMoist >= thresholds.maxMoist) {
         return res.status(400).json({ error: "invalidLimits", message: "Min values cannot be >= Max values" });
       }
 

@@ -35,7 +35,7 @@ export default function AlertsLog({ alerts, loading }) {
           const config = typeConfig[alert.level] ?? typeConfig.warning;
           return (
             <tr key={alert._id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-5 py-3 text-gray-400 whitespace-nowrap">
+              <td className="px-5 py-3 text-gray-900 whitespace-nowrap">
                 <div>{formatDateTime(alert.timestamp)}</div>
                 <div className="text-xs text-gray-300">{formatRelativeTime(alert.timestamp)}</div>
               </td>

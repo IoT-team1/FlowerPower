@@ -12,7 +12,7 @@ const MeasurementAbl = {
       const { plantId, temperature, humidity, moisture } = req.body;
 
       // 1. Save measurement via DAO
-      await MeasurementDao.create({ plantId, temperature, humidity, moisture });
+      await MeasurementDao.create({ gatewayId, plantId, temperature, humidity, moisture });
 
       // 2. Get gatewayId from plant based on plantId
       // const gatewayId = (await PlantDao.get(plantId)).gatewayId;
@@ -26,7 +26,7 @@ const MeasurementAbl = {
 
       let alertsCreated = 0;
 
-      const { minTemp, maxTemp, minHum, maxHum } = plant.thresholds;
+      const { minTemp, maxTemp, minHum, maxHum, minMoist, maxMoist } = plant.thresholds;
       const alerts = [];
 
       if (temperature < minTemp)
@@ -34,10 +34,15 @@ const MeasurementAbl = {
       else if (temperature > maxTemp)
         alerts.push(`Temperature is too high (${temperature}°C).`);
 
+      if (moisture < minMoist)
+        alerts.push(`Soil moisture is too low (${moisture}%).`);
+      else if (moisture > maxMoist)
+        alerts.push(`Soil moisture is too high (${moisture}%).`);
+
       if (humidity < minHum)
-        alerts.push(`Soil moisture is too low (${humidity}%).`);
+        alerts.push(`Humidity is too low (${humidity}%).`);
       else if (humidity > maxHum)
-        alerts.push(`Soil moisture is too high (${humidity}%).`);
+        alerts.push(`Humidity is too high (${humidity}%).`);
 
       for (const alertMessage of alerts) {
         const alert = await AlertDao.create({
