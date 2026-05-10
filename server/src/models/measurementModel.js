@@ -16,8 +16,9 @@ const measurementSchema = new mongoose.Schema({
   },
   
   // Environmental data captured by sensors
-  temperature: { type: Number, required: true },
-  humidity: { type: Number, required: true }, 
+  temperature: { type: Number, required: false },
+  humidity: { type: Number, required: false },
+  moisture: { type: Number, required: true },
   
   // Timestamp of when the measurement was recorded
   timestamp: { type: Date, default: Date.now }

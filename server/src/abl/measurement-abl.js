@@ -9,10 +9,10 @@ const MeasurementAbl = {
     try {
       // const plantId = req.plantId;
       const gatewayId = req.gatewayId;
-      const { plantId, temperature, humidity } = req.body;
+      const { plantId, temperature, humidity, moisture } = req.body;
 
       // 1. Save measurement via DAO
-      await MeasurementDao.create({ plantId, temperature, humidity });
+      await MeasurementDao.create({ plantId, temperature, humidity, moisture });
 
       // 2. Get gatewayId from plant based on plantId
       // const gatewayId = (await PlantDao.get(plantId)).gatewayId;
