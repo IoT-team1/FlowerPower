@@ -6,11 +6,11 @@ const GatewayDao = require("../dao/gateway-dao");
 const MeasurementAbl = {
   async create(req, res) {
     try {
-      const plantId = req.plantId;
-      const { temperature, humidity } = req.body;
+      const gatewayId = req.gatewayId; 
+      const { temperature, humidity, moisture } = req.body;
 
       // 1. Save measurement via DAO
-      await MeasurementDao.create({ plantId, temperature, humidity });
+      await MeasurementDao.create({ gatewayId, temperature, humidity, moisture });
 
       // 2. Get gatewayId from plant based on plantId
       const gatewayId = (await PlantDao.get(plantId)).gatewayId;
