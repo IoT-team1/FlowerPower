@@ -3,8 +3,6 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine,
 } from 'recharts';
 import { formatChartTime } from '../../utils/formatters';
-import { aggregateMeasurements } from '../../utils/stats';
-
 const metrics = [
   { key: 'temperature', label: 'Teplota',      unit: '°C', color: '#134087' },
   { key: 'moisture',    label: 'Vlhkost půdy', unit: '%',  color: '#BA7517' },
@@ -29,7 +27,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function HistoryChart({ measurements, thresholds = {}, range = '24h' }) {
-  const chartData = aggregateMeasurements(measurements, range);
+  const chartData = measurements
   console.log('chartData:', chartData);
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">

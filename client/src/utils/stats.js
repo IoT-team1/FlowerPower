@@ -52,6 +52,7 @@ export const aggregateMeasurements = (measurements, range) => {
 
       buckets.push({
         label: from.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }),
+        timestamp: from.toLocaleTimeString('cs-CZ', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
         from,
         to,
       });
@@ -67,6 +68,7 @@ export const aggregateMeasurements = (measurements, range) => {
 
       buckets.push({
         label: from.toLocaleDateString('cs-CZ', { weekday: 'short', day: 'numeric' }),
+        timestamp: from.toLocaleDateString('cs-CZ', { month: 'numeric', day: 'numeric'}),
         from,
         to,
       });
@@ -82,6 +84,7 @@ export const aggregateMeasurements = (measurements, range) => {
 
       buckets.push({
         label: from.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }),
+        timestamp: from.toLocaleDateString('cs-CZ', { month: 'numeric', day: 'numeric'}),
         from,
         to,
       });
@@ -89,13 +92,13 @@ export const aggregateMeasurements = (measurements, range) => {
   }
 
   // Counts avg for each bucket
-  return buckets.map(({ label, from, to }) => {
+  return buckets.map(({ label, timestamp, from, to }) => {
     const inBucket = measurements.filter((m) => {
       const t = new Date(m.timestamp);
       return t >= from && t < to;
     });
 
-    if (!inBucket.length) return { label, temperature: null, humidity: null };
+    if (!inBucket.length) return { label, timestamp, temperature: null, humidity: null, moisture: null };
 
     const avg = (key) =>
       Math.round(
@@ -104,6 +107,7 @@ export const aggregateMeasurements = (measurements, range) => {
 
     return {
       label,
+      timestamp,
       temperature: avg('temperature'),
       humidity:    avg('humidity'),
       moisture:    avg('moisture'),

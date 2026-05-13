@@ -32,7 +32,7 @@ export default function StatsGrid({ measurements, thresholds = {} }) {
   const moistStyles = getThresholdStyles(last?.moisture, thresholds.minMoist, thresholds.maxMoist);
   console.log("ŽŽŽŽŽŽ", thresholds);
   return (
-    <div className="grid grid-cols-3 gap-3 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
       <StatCard
         label="Aktuální teplota"
         unit="°C"

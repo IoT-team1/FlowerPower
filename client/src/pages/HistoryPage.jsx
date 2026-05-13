@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { usePlants } from '../hooks/usePlants';
 import { useHistoryMeasurements } from '../hooks/useHistoryMeasurements';
-import { filterByRange } from '../utils/stats';
+import { filterByRange, aggregateMeasurements } from '../utils/stats';
 import { useAlertHistory } from '../hooks/useAlertHistory';
 import RangeSelector from '../components/history/RangeSelector';
 import HistoryStatsGrid from '../components/history/HistoryStatsGrid';
@@ -25,7 +25,11 @@ export default function HistoryPage() {
     () => filterByRange(measurements, range),
     [measurements, range]
   );
-
+  const aggregatedMeasurements = useMemo(
+    () => aggregateMeasurements(filteredMeasurements, range),
+    [filteredMeasurements, range]
+  );
+  console.log("aggregatedMeasurements:", aggregatedMeasurements)
   const filteredAlerts = useMemo(
     () => filterByRange(alerts, range),
     [alerts, range]
@@ -44,19 +48,28 @@ export default function HistoryPage() {
   return (
     <div>
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-lg font-medium text-gray-900">Historie</h1>
         <div className="flex items-center gap-3">
-          <select
-            value={selectedPlantId}
-            onChange={(e) => setSelectedPlantId(e.target.value)}
-            className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 cursor-pointer focus:outline-none"
-          >
-            <option value="">Vyberte rostlinu</option>
-            {plants.map((p) => (
-              <option key={p._id} value={p._id}>{p.name}</option>
-            ))}
-          </select>
+          <div className="relative flex-1 sm:flex-none">
+            <select
+              value={selectedPlantId}
+              onChange={(e) => setSelectedPlantId(e.target.value)}
+              className="w-full text-sm pl-3 pr-8 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 cursor-pointer focus:outline-none appearance-none"
+            >
+              <option value="">Vyberte rostlinu</option>
+              {plants.map((p) => (
+                <option key={p._id} value={p._id}>{p.name}</option>
+              ))}
+            </select>
+            <svg
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"
+              width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            >
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
           <RangeSelector value={range} onChange={setRange} />
         </div>
       </div>
@@ -86,12 +99,12 @@ export default function HistoryPage() {
         ) : (
           <>
             <HistoryStatsGrid measurements={filteredMeasurements} />
-            <HistoryChart measurements={filteredMeasurements} thresholds={thresholds} range={range}/>
+            <HistoryChart measurements={aggregatedMeasurements} thresholds={thresholds} range={range}/>
             <h2 className="text-sm font-medium text-gray-900 mb-3">
-              Měření ({filteredMeasurements.length})
+              Měření ({aggregatedMeasurements.length})
             </h2>
             <MeasurementTable
-              measurements={filteredMeasurements}
+              measurements={aggregatedMeasurements.toReversed()}
               thresholds={thresholds}
             />
           </>

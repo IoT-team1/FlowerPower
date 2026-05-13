@@ -6,11 +6,13 @@ export default function AlertPanel({ onClose, alerts, resolve }) {
 
   console.log('alerts:', alerts);
 
-  const filtered = alerts.filter((a) => {
-    if (filter === 'unresolved') return !a.isResolved;
-    if (filter === 'resolved')   return a.isResolved;
-    return true;
-  });
+  const filtered = [...alerts]
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+    .filter((a) => {
+      if (filter === 'unresolved') return !a.isResolved;
+      if (filter === 'resolved')   return a.isResolved;
+      return true;
+    });
 
 
   return (

@@ -25,7 +25,7 @@ export default function HistoryStatsGrid({ measurements }) {
   const moistStats = calcStats(measurements, 'moisture');
 
   return (
-    <div className="grid grid-cols-4 gap-3 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
       <StatTile label="Průměrná teplota"      unit="°C" {...tempStats} />
       <StatTile label="Průměrná vlhkost půdy" unit="%"  {...moistStats} />
       <StatTile label="Průměrná vlhkost vzduchu" unit="%"  {...humStats} />

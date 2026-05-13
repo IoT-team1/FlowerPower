@@ -38,8 +38,6 @@ export const formatRelativeTime = (date) => {
 export const formatChartTime = (timestamp) => {
   if (!timestamp) return '';
   return new Date(timestamp).toLocaleTimeString('cs-CZ', {
-    month: 'short',
-    day: 'numeric',
     hour: "2-digit",
     minute: '2-digit',
   });

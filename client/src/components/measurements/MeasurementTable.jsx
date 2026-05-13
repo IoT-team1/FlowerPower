@@ -28,7 +28,7 @@ export default function MeasurementTable({ measurements, thresholds = {} }) {
 
           return (
             <tr key={m._id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-5 py-3 text-gray-900">{formatDateTime(m.timestamp)}</td>
+              <td className="px-5 py-3 text-gray-900">{m.timestamp}</td>
               <td className={`px-5 py-3 font-medium ${tempStyles.text}`}>{m.temperature}°C</td>
               <td className={`px-5 py-3 font-medium ${moistStyles.text}`}>{m.moisture}%</td>
               <td className={`px-5 py-3 font-medium ${humStyles.text}`}>{m.humidity}%</td>

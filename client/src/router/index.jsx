@@ -13,6 +13,7 @@ const router = createBrowserRouter([
       { path: 'devices', element: <DevicesPage /> },
       { path: 'devices/:id', element: <DeviceDetailPage /> },
       { path: 'history', element: <HistoryPage /> },
+      { path: '*', element: <Navigate to="/devices" replace /> },
     ],
   },
 ]);

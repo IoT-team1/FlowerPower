@@ -8,7 +8,7 @@ const MeasurementDao = {
   },
 
   // List measurements with filter and limit to prevent database overload
-  async list(filter, limit = 100) {
+  async list(filter, limit = 30000) {
     return await Measurement.find(filter).sort({ timestamp: -1 }).limit(limit);
   },
 

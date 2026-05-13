@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { usePlant } from '../hooks/usePlants';
 import { useMeasurements } from '../hooks/useMeasurements';
 import { getThresholdStatus } from '../utils/thresholds';
+import { formatDateTime } from '../utils/formatters.js';
 import StatsGrid from '../components/measurements/StatsGrid';
 import MetricChart from '../components/measurements/MetricChart';
 import MeasurementTable from '../components/measurements/MeasurementTable';
@@ -31,6 +32,11 @@ export default function DeviceDetailPage() {
     getThresholdStatus(last.humidity, thresholds.minHum, thresholds.maxHum) === 'low'       && `Vlhkost vzduchu je příliš nízká (${last.humidity}%, min. ${thresholds.minHum}%)`,
     getThresholdStatus(last.humidity, thresholds.minHum, thresholds.maxHum) === 'high'      && `Vlhkost vzduchu je příliš vysoká (${last.humidity}%, max. ${thresholds.maxHum}%)`,
   ].filter(Boolean) : [];
+
+  const formattedMeasurements = measurements.slice(0, 10).map((m) => ({
+    ...m,
+    timestamp: formatDateTime(m.timestamp),
+  }));
 
   console.log('Plant:', plant);
   if (plantLoading) return (
@@ -92,7 +98,7 @@ export default function DeviceDetailPage() {
           <MetricChart measurements={measurements} thresholds={thresholds} />
           <h2 className="text-sm font-medium text-gray-900 mb-3">Posledních 10 měření</h2>
           <MeasurementTable
-            measurements={measurements.slice(0, 10)}
+            measurements={formattedMeasurements}
             thresholds={thresholds}
           />
         </>
