@@ -7,15 +7,11 @@ const SseManager = require("../sevises/sseManager");
 const MeasurementAbl = {
   async create(req, res) {
     try {
-      // const plantId = req.plantId;
       const gatewayId = req.gatewayId;
       const { plantId, temperature, humidity, moisture } = req.body;
 
       // 1. Save measurement via DAO
       await MeasurementDao.create({ gatewayId, plantId, temperature, humidity, moisture });
-
-      // 2. Get gatewayId from plant based on plantId
-      // const gatewayId = (await PlantDao.get(plantId)).gatewayId;
 
       // 3. Update gateway status via DAO
       await GatewayDao.update(gatewayId, { lastSync: new Date(), status: "online" });
@@ -27,28 +23,29 @@ const MeasurementAbl = {
       let alertsCreated = 0;
 
       const { minTemp, maxTemp, minHum, maxHum, minMoist, maxMoist } = plant.thresholds;
-      const alerts = [];
+      
+      // Store alert data as objects including recommendation
+      const alertTriggers = [];
 
       if (temperature < minTemp)
-        alerts.push(`Temperature is too low (${temperature}°C).`);
+        alertTriggers.push({ msg: `Teplota je příliš nízká (${temperature}°C).`, rec: "Zkuste rostlinu přesunout na teplejší místo." });
       else if (temperature > maxTemp)
-        alerts.push(`Temperature is too high (${temperature}°C).`);
+        alertTriggers.push({ msg: `Teplota je příliš vysoká (${temperature}°C).`, rec: "Ochlaďte místnost větráním nebo rostlinu přesuňte do stínu." });
 
       if (moisture < minMoist)
-        alerts.push(`Soil moisture is too low (${moisture}%).`);
+        alertTriggers.push({ msg: `Vlhkost půdy je příliš nízká (${moisture}%).`, rec: "Rostlina má žízeň! Doporučujeme ji ihned zalít odstátou vodou." });
       else if (moisture > maxMoist)
-        alerts.push(`Soil moisture is too high (${moisture}%).`);
+        alertTriggers.push({ msg: `Vlhkost půdy je příliš vysoká (${moisture}%).`, rec: "Půda je přemokřená. Omezte zálivku, aby neuhnily kořeny." });
 
       if (humidity < minHum)
-        alerts.push(`Humidity is too low (${humidity}%).`);
-      else if (humidity > maxHum)
-        alerts.push(`Humidity is too high (${humidity}%).`);
+        alertTriggers.push({ msg: `Vlhkost vzduchu je příliš nízká (${humidity}%).`, rec: "Vzduch je suchý. Doporučujeme rostlinu rosit rozprašovačem." });
 
-      for (const alertMessage of alerts) {
+      for (const item of alertTriggers) {
         const alert = await AlertDao.create({
           plantId: plant._id,
           plantName: plant.name,
-          message: alertMessage,
+          message: item.msg,
+          recommendation: item.rec, // Added recommendation to database
           level: 'warning',
         });
 
@@ -56,7 +53,8 @@ const MeasurementAbl = {
           _id: alert._id,
           plantId: plant._id,
           plantName: plant.name,
-          message: alertMessage,
+          message: item.msg,
+          recommendation: item.rec, // Broadcast recommendation to frontend
           level: 'warning',
           isResolved: false,
           timestamp: new Date(),
@@ -64,7 +62,6 @@ const MeasurementAbl = {
 
         alertsCreated++;
       }
-
 
       res.status(201).json({ 
         message: "Measurement saved successfully", 
@@ -78,14 +75,8 @@ const MeasurementAbl = {
 
   async list(req, res) {
     try {
-      // Filtering based on gatewayID - uncomment below if needed
-      // const { gatewayId } = req.query;
-      // const filter = gatewayId ? { gatewayId } : {};
-
-      // Filtering based on plantId
       const { plantId } = req.query;
       const filter = plantId ? { plantId } : {};
-
       const measurements = await MeasurementDao.list(filter);
       res.status(200).json(measurements);
     } catch (error) {
@@ -95,15 +86,11 @@ const MeasurementAbl = {
 
   async deleteOld(req, res) {
     try {
-      const days = req.body.days || 30; // Default to 30 days if not provided
+      const days = req.body.days || 30;
       const dateLimit = new Date();
       dateLimit.setDate(dateLimit.getDate() - days);
-
       const result = await MeasurementDao.deleteOld(dateLimit);
-      res.status(200).json({ 
-        count: result.deletedCount, 
-        message: "Old measurements deleted successfully" 
-      });
+      res.status(200).json({ count: result.deletedCount, message: "Old measurements deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
