@@ -13,7 +13,7 @@ export const useAlertStore = create((set) => ({
     const exists = state.alerts.some(
       (a) => a._id === alert._id
     );
-    if (exists) return {};
+    if (exists) return state;
 
     return {
       alerts: [alert, ...state.alerts],

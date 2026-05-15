@@ -37,13 +37,10 @@ export default function Toast() {
 
   useEffect(() => {
     const latest = alerts[0];
-    if (!latest) return;
-    const id = latest.alertId || latest._id;
-    setVisible((prev) => {
-      if (prev.find((v) => v._id === id)) return prev;
-      return [{ ...latest, _id: id }, ...prev].slice(0, 2);
-    });
-  }, [alerts]);
+    if (!latest || visible.find((v) => v._id === (latest.alertId || latest._id))) return;
+    const toastAlert = { ...latest, _id: latest.alertId || latest._id };
+    setVisible((prev) => [toastAlert, ...prev].slice(0, 2));
+  }, [alerts, visible]);
 
   const remove = (id) => setVisible((prev) => prev.filter((v) => v._id !== id));
 
