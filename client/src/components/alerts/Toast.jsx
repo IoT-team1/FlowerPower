@@ -41,7 +41,7 @@ export default function Toast() {
     const id = latest.alertId || latest._id;
     setVisible((prev) => {
       if (prev.find((v) => v._id === id)) return prev;
-      return [{ ...latest, _id: id }, ...prev].slice(0, 2);
+      return [{ ...latest, _id: id }, ...prev].slice(0, 3);
     });
   }, [alerts]);
 
