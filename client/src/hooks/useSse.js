@@ -20,3 +20,7 @@ export function useSse() {
     };
   }, []);
 }
+sseService.on('alert', (data) => {
+  console.log('SSE ALERT', data);
+  useAlertStore.getState().addAlert(data);
+});
