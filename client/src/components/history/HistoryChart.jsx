@@ -2,7 +2,7 @@ import {
   ResponsiveContainer, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine,
 } from 'recharts';
-import { formatChartTime } from '../../utils/formatters';
+
 const metrics = [
   { key: 'temperature', label: 'Teplota',      unit: '°C', color: '#134087' },
   { key: 'moisture',    label: 'Vlhkost půdy', unit: '%',  color: '#BA7517' },
@@ -50,19 +50,19 @@ export default function HistoryChart({ measurements, thresholds = {}, range = '2
       ) : (
         <>
           <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <LineChart data={chartData} margin={{ top: 4, right: 20, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fill: '#9ca3af' }}
+                tick={{ fontSize: 10, fill: '#9ca3af' }}
                 tickLine={false}
                 axisLine={true}
-                interval={range === '30d' ? 4 : 'preserveStartEnd'}
+                interval={range === '30d' ? 3 : 0}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: '#9ca3af' }}
+                tick={{ fontSize: 10, fill: '#9ca3af' }}
                 tickLine={false}
-                axisLine={false}
+                axisLine={true}
               />
               <Tooltip content={<CustomTooltip />} />
               {/*

@@ -39,6 +39,8 @@ const MeasurementAbl = {
 
       if (humidity < minHum)
         alertTriggers.push({ msg: `Vlhkost vzduchu je příliš nízká (${humidity}%).`, rec: "Vzduch je suchý. Doporučujeme rostlinu rosit rozprašovačem." });
+      else if (humidity > maxHum)
+        alertTriggers.push({ msg: `Vlhkost vzduchu je příliš vysoká (${humidity}%).`, rec: "Vlhkost vzduchu je příliš vysoká. Doporučujeme vyvětrat." });
 
       for (const item of alertTriggers) {
         const alert = await AlertDao.create({

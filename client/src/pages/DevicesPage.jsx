@@ -22,7 +22,7 @@ export default function DevicesPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-medium text-gray-900 cursor-default mb-4">Přehled zařízení</h1>
+      <h1 className="text-lg font-medium text-gray-900 mb-4">Přehled zařízení</h1>
       <DevicesSummary devices={plants} alerts={alerts}/>
       <DeviceList devices={plants} />
     </div>

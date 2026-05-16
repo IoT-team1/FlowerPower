@@ -16,12 +16,14 @@ class SseManager {
 
     // Sending all existing alerts to the new client
     const existing = await AlertDao.list({ isResolved: false });
-    existing.forEach((alert) => {
+    const sorted = existing.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // ← oldest goes first, cause it's SSE '
+    sorted.forEach((alert) => {
       res.write(`event: alert\ndata: ${JSON.stringify({
         _id: alert._id,
         plantId: alert.plantId,
         plantName: alert.plantName,
         message: alert.message,
+        recommendation: alert.recommendation,
         level: alert.level,
         isResolved: alert.isResolved,
         timestamp: alert.timestamp,
