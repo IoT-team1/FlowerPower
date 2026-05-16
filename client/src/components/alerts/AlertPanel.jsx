@@ -79,7 +79,7 @@ export default function AlertPanel({ onClose, alerts, resolve }) {
                 {!alert.isResolved && (
                   <button
                     onClick={() => resolve(alert._id) }
-                    className="text-[10px] font-bold text-green-700 hover:text-green-900 px-2 py-1 bg-green-50 rounded transition-colors"
+                    className="text-[10px] font-bold text-green-700 hover:text-green-900 px-2 py-1 bg-green-50 rounded-xl cursor-pointer transition-colors"
                   >
                     Vyřešit
                   </button>

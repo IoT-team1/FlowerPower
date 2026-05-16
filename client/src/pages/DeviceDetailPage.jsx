@@ -70,6 +70,18 @@ export default function DeviceDetailPage() {
         <p className="text-sm text-gray-400 mt-0.5">Gateway: {plant.gatewayId?.name} · {plant.gatewayId?.status === 'online' ? 'online' : 'offline'}</p>
       </div>
 
+      {/* Gateway is offline */}
+      {plant.gatewayId?.status === 'offline' ? (
+        <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <div className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
+            <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
+              <path d="M5 2v3M5 7v.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <span className="text-sm text-gray-900">Zařízení je offline</span>
+        </div>
+      ) : (
+        <>
       {/* Alerts */}
       {!measLoading && localAlerts.length > 0 && (
         <div className="mb-5 flex flex-col gap-2">
@@ -102,7 +114,9 @@ export default function DeviceDetailPage() {
             thresholds={thresholds}
           />
         </>
-      )}
+      )};
+      </>
+    )}
     </div>
   );
 }

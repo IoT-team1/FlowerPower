@@ -43,7 +43,7 @@ export default function Toast() {
       if (prev.find((v) => v._id === id)) return prev;
       return [{ ...latest, _id: id }, ...prev].slice(0, 3);
     });
-  }, [alerts]);
+  }, [alerts.length]);
 
   const remove = (id) => setVisible((prev) => prev.filter((v) => v._id !== id));
 

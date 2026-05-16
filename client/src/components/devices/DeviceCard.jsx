@@ -44,6 +44,7 @@ export default function DeviceCard({ device: plant }) {
       </div>
 
       {/* Metriky – skryté na mobilu */}
+      {status.label !== 'Offline' && (
       <div className="hidden sm:flex gap-6 flex-shrink-0">
         <div className="text-right">
           <div className={`text-sm font-medium ${tempStyles.text}`}>
@@ -64,6 +65,32 @@ export default function DeviceCard({ device: plant }) {
           <div className="text-xs text-gray-400">vlhkost vzduchu</div>
         </div>
       </div>
+      )}
+
+      {/* Metrics when device is offline */}
+      {status.label === 'Offline' && (
+        <div className="hidden sm:flex gap-6 flex-shrink-0">
+          <div className="text-right">
+            <div className= "text-sm font-medium text-gray-400" >
+              —
+            </div>
+            <div className="text-xs text-gray-400">teplota</div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-medium text-gray-400">
+              —
+            </div>
+            <div className="text-xs text-gray-400">vlhkost půdy</div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-medium  text-gray-400">
+              —
+            </div>
+            <div className="text-xs text-gray-400">vlhkost vzduchu</div>
+          </div>
+        </div>
+      )}
+
 
       {/* Status badge */}
       <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${status.badge}`}>

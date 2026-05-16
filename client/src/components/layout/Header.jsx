@@ -35,7 +35,7 @@ export default function Header() {
         </div>
 
         {/* desktop nav */}
-        <nav className="hidden sm:flex items-center gap-1">
+        <nav className="hidden sm:flex items-center gap-1 mr-15" >
           {navLinks.map(({ to, label }) => (
             <NavLink
               key={to}
@@ -59,7 +59,7 @@ export default function Header() {
           <div className="relative">
             <button
               onClick={() => setPanelOpen((o) => !o)}
-              className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors relative"
+              className="w-8 h-8 rounded-lg cursor-pointer border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors relative"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
