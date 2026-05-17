@@ -1,14 +1,32 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAlertStore } from '../../store/alerts.store';
 import AlertPanel from '../alerts/AlertPanel';
 import { useAlerts } from '../../hooks/useAlerts';
+import { useAuth } from '../../hooks/useAuth';
+import client from '../../api/client';
 
 export default function Header() {
   const unreadCount = useAlertStore((s) => s.unreadCount);
   const [panelOpen, setPanelOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const { alerts, resolve } = useAlerts();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const initials = user?.name
+    ? user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()
+    : '?';
+
+  const Avatar = ({ className }) => user?.photo
+    ? <img src={user.photo} alt={user.name} className={`rounded-full object-cover ${className}`} />
+    : <div className={`rounded-full bg-green-50 border border-gray-200 flex items-center justify-center text-xs font-medium text-green-700 ${className}`}>{initials}</div>;
+
+  const logout = async () => {
+    await client.post('/auth/logout');
+    navigate('/login');
+  };
 
   const navLinks = [
     { to: '/devices', label: 'Přehled zařízení' },
@@ -75,9 +93,25 @@ export default function Header() {
             )}
           </div>
 
-          {/* Avatar – desktop only */}
-          <div className="hidden sm:flex w-8 h-8 rounded-full bg-green-50 border border-gray-200 items-center justify-center text-xs font-medium text-green-700 cursor-pointer">
-            JP
+          {/* Avatar with dropdown – desktop only */}
+          <div className="relative hidden sm:flex">
+            <button onClick={() => setAvatarOpen((o) => !o)} className="cursor-pointer">
+              <Avatar className="w-8 h-8" />
+            </button>
+            {avatarOpen && (
+              <div className="absolute right-0 top-10 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                <div className="px-4 py-3 border-b border-gray-100">
+                  <div className="text-sm font-medium text-gray-900 truncate">{user?.name}</div>
+                  <div className="text-xs text-gray-400 truncate">{user?.email}</div>
+                </div>
+                <button
+                  onClick={logout}
+                  className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                >
+                  Odhlásit se
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Hamburger – mobile only */}
@@ -117,11 +151,14 @@ export default function Header() {
               {label}
             </NavLink>
           ))}
-          <div className="flex items-center gap-2 px-3 py-2 mt-1 border-t border-gray-100 pt-3">
-            <div className="w-7 h-7 rounded-full bg-green-50 border border-gray-200 flex items-center justify-center text-xs font-medium text-green-700">
-              JP
+          <div className="flex items-center justify-between px-3 py-2 mt-1 border-t border-gray-100 pt-3">
+            <div className="flex items-center gap-2">
+              <Avatar className="w-7 h-7" />
+              <span className="text-sm text-gray-500">{user?.name ?? 'Uživatel'}</span>
             </div>
-            <span className="text-sm text-gray-500">Uživatel</span>
+            <button onClick={logout} className="text-xs text-red-500 hover:text-red-700 cursor-pointer">
+              Odhlásit
+            </button>
           </div>
         </div>
       )}
