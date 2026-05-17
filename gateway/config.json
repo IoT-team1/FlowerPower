@@ -3,5 +3,6 @@
   "gatewayId": "id",
   "deviceSecret": "secret",
   "arduinoPort": "/dev/ttyACM0",
-  "baudRate": 9600
+  "baudRate": 9600,
+  "measurementIntervalSec" : 15
 }
