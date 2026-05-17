@@ -8,7 +8,7 @@ class SseService {
     if (this.es) return;
     
     console.log('Connecting to PRODUCTION SSE at:', url);
-    this.es = new EventSource(url);
+    this.es = new EventSource(url, { withCredentials: true });
 
     this.es.onopen = () => {
       console.log('SSE connection to Render established.');
