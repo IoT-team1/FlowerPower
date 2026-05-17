@@ -36,7 +36,9 @@ passport.use(new GoogleStrategy({
   proxy: true,
 }, (accessToken, refreshToken, profile, done) => {
   const email = profile.emails[0].value;
-  const allowedEmails = (process.env.ALLOWED_EMAILS || '').split(',').map((e) => e.trim());
+  const allowedEmails = process.env.ALLOWED_EMAILS
+    ? process.env.ALLOWED_EMAILS.split(',').map((e) => e.trim())
+    : [];
   if (allowedEmails.length > 0 && !allowedEmails.includes(email)) {
     return done(null, false);
   }
