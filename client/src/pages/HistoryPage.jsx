@@ -19,7 +19,6 @@ export default function HistoryPage() {
   const { alerts, loading: alertsLoading }       = useAlertHistory(selectedPlantId);
 
   const selectedPlant = plants.find((p) => p._id === selectedPlantId) ?? null;
-  console.log('Selected plant:', selectedPlant);
 
   const filteredMeasurements = useMemo(
     () => filterByRange(measurements, range),
@@ -29,7 +28,6 @@ export default function HistoryPage() {
     () => aggregateMeasurements(filteredMeasurements, range),
     [filteredMeasurements, range]
   );
-  console.log("aggregatedMeasurements:", aggregatedMeasurements)
   const filteredAlerts = useMemo(
     () => filterByRange(alerts, range),
     [alerts, range]
@@ -44,7 +42,7 @@ export default function HistoryPage() {
       maxMoist: selectedPlant.thresholds?.maxMoist,
     }
     : {};
-  console.log("filteredAlerts:", filteredAlerts)
+
   return (
     <div>
       {/* Toolbar */}

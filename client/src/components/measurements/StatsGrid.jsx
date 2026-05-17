@@ -25,12 +25,11 @@ function StatCard({ label, current, min, max, unit, thresholdStyles }) {
 
 export default function StatsGrid({ measurements, thresholds = {} }) {
   const last = measurements[0] ?? null;
-  console.log("last",last);
 
   const tempStyles = getThresholdStyles(last?.temperature, thresholds.minTemp, thresholds.maxTemp);
   const humStyles  = getThresholdStyles(last?.humidity, thresholds.minHum, thresholds.maxHum);
   const moistStyles = getThresholdStyles(last?.moisture, thresholds.minMoist, thresholds.maxMoist);
-  console.log("ŽŽŽŽŽŽ", thresholds);
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
       <StatCard

@@ -41,7 +41,7 @@ export default function MetricChart({ measurements, thresholds = {} }) {
       value: m[activeTab],
     }));
 
-  console.log("chartData", chartData)
+
   const minThreshold =
     activeTab === 'temperature'
       ? thresholds.minTemp

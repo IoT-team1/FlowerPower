@@ -11,7 +11,6 @@ export function useMeasurements(plantId, params = {}) {
     setLoading(true);
     getMeasurements(plantId, params)
       .then((data) => {
-        console.log('useMeasurements response:', data);
         const sorted = [...data].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         setMeasurements(sorted);
       })

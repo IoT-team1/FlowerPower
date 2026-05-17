@@ -16,7 +16,7 @@ class SseManager {
 
     // Sending all existing alerts to the new client
     const existing = await AlertDao.list({ isResolved: false });
-    const sorted = existing.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // ← oldest goes first, cause it's SSE '
+    const sorted = existing.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // ← oldest goes first, because it's SSE '
     sorted.forEach((alert) => {
       res.write(`event: alert\ndata: ${JSON.stringify({
         _id: alert._id,

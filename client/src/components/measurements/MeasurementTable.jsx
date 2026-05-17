@@ -1,12 +1,10 @@
-import { formatDateTime } from '../../utils/formatters';
 import { getThresholdStyles } from '../../utils/thresholds';
 
 export default function MeasurementTable({ measurements, thresholds = {} }) {
   if (!measurements.length) return (
     <div className="text-sm text-gray-400 py-6 text-center">Žádná měření.</div>
   );
-  console.log(measurements);
-  console.log(thresholds);
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
       <div className="max-h-[440px] overflow-y-auto">

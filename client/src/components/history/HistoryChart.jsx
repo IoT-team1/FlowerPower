@@ -1,6 +1,6 @@
 import {
   ResponsiveContainer, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine,
+  XAxis, YAxis, CartesianGrid, Tooltip,
 } from 'recharts';
 
 const metrics = [
@@ -26,9 +26,10 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-export default function HistoryChart({ measurements, thresholds = {}, range = '24h' }) {
+export default function HistoryChart({ measurements, range = '24h' }) {
   const chartData = measurements
-  console.log('chartData:', chartData);
+  const isMobile = window.innerWidth < 640;
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -57,7 +58,7 @@ export default function HistoryChart({ measurements, thresholds = {}, range = '2
                 tick={{ fontSize: 10, fill: '#9ca3af' }}
                 tickLine={false}
                 axisLine={true}
-                interval={range === '30d' ? 3 : 0}
+                interval={isMobile ? range === '24h' ? 3 : range === '7d' ? 1 : 4 : range === '30d' ? 3 : 0}
               />
               <YAxis
                 tick={{ fontSize: 10, fill: '#9ca3af' }}
@@ -65,41 +66,11 @@ export default function HistoryChart({ measurements, thresholds = {}, range = '2
                 axisLine={true}
               />
               <Tooltip content={<CustomTooltip />} />
-              {/*
-              {thresholds.minTemp != null && (
-                <ReferenceLine y={thresholds.minTemp} stroke="#134087" strokeDasharray="4 3" strokeWidth={1} />
-              )}
-              {thresholds.maxTemp != null && (
-                <ReferenceLine y={thresholds.maxTemp} stroke="#134087" strokeDasharray="4 3" strokeWidth={1} />
-              )}
-              {thresholds.minHum != null && (
-                <ReferenceLine y={thresholds.minHum} stroke="#BA7517" strokeDasharray="4 3" strokeWidth={1} />
-              )}
-              {thresholds.maxHum != null && (
-                <ReferenceLine y={thresholds.maxHum} stroke="#BA7517" strokeDasharray="4 3" strokeWidth={1} />
-              )}
-              */}
               <Line type="monotone" dataKey="temperature" stroke="#134087" strokeWidth={1.5} dot={ { r: 2, fill: "#134087"}} activeDot={{ r: 3 }}                connectNulls={false}/>
               <Line type="monotone" dataKey="moisture"    stroke="#BA7517" strokeWidth={1.5} dot={ { r: 2, fill: "#BA7517"}} activeDot={{ r: 3 }}               connectNulls={false} />
               <Line type="monotone" dataKey="humidity"    stroke="#085319" strokeWidth={1.5} dot={ { r: 2, fill: "#085319"}} activeDot={{ r: 3 }}               connectNulls={false} />
             </LineChart>
           </ResponsiveContainer>
-          {/*}
-          <div className="flex gap-4 mt-2 justify-end flex-wrap">
-            {thresholds.minTemp != null && (
-              <span className="text-xs text-gray-400 flex items-center gap-1">
-                <span className="inline-block w-4 border-t border-dashed border-b-blue-900" />
-                min/max teplota
-              </span>
-            )}
-            {thresholds.minHum != null && (
-              <span className="text-xs text-gray-400 flex items-center gap-1">
-                <span className="inline-block w-4 border-t border-dashed border-amber-600" />
-                min/max vlhkost
-              </span>
-            )}
-          </div>
-          */}
         </>
       )}
     </div>

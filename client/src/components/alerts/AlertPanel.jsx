@@ -56,7 +56,7 @@ export default function AlertPanel({ onClose, alerts, resolve }) {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 min-w-0">
                   <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
-                    alert.isResolved ? 'bg-gray-300' : 'bg-amber-500 animate-pulse'
+                    alert.isResolved ? 'bg-green-500' : 'bg-amber-500 animate-pulse'
                   }`} />
                   <div className="min-w-0">
                     <div className="text-[11px] font-bold text-gray-900 uppercase">
@@ -66,7 +66,7 @@ export default function AlertPanel({ onClose, alerts, resolve }) {
                     
                     {/* Recommendation Tip display */}
                     {alert.recommendation && (
-                      <div className="text-[10px] text-amber-800 mt-1.5 leading-tight italic bg-amber-50 rounded px-2 py-1 border border-amber-100/50">
+                      <div className="text-[10px] text-amber-800 mt-1.5 leading-tight  bg-amber-50 rounded px-2 py-1 border border-amber-100/50">
                         Tip: {alert.recommendation}
                       </div>
                     )}

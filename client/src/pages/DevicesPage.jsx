@@ -6,7 +6,6 @@ import { useAlerts } from "../hooks/useAlerts.js";
 export default function DevicesPage() {
   const { plants, loading, error } = usePlants();
   const { alerts } = useAlerts();
-  console.log('Alerts 66666:', alerts);
 
   if (loading) return (
     <div className="flex items-center justify-center h-64 text-gray-400 text-sm">

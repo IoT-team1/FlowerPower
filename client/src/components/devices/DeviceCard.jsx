@@ -14,7 +14,6 @@ export default function DeviceCard({ device: plant }) {
 
   const { measurements } = useMeasurements(plant._id, { limit: 1 });
   const last = measurements[0] ?? null;
-  console.log('DeviceCard last:', last);
 
   const tempStyles = getThresholdStyles(last?.temperature, plant.thresholds?.minTemp, plant.thresholds?.maxTemp);
   const humStyles  = getThresholdStyles(last?.humidity, plant.thresholds?.minHum, plant.thresholds?.maxHum);

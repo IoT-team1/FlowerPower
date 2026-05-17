@@ -22,6 +22,5 @@ export function useAlertHistory(plantId) {
       .finally(() => setLoading(false));
   }, [plantId]);
 
-  console.log('useAlertHistory666666:', alerts);
   return { alerts, loading, error };
 }

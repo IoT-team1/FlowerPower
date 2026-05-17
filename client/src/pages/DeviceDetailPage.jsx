@@ -9,7 +9,6 @@ import MeasurementTable from '../components/measurements/MeasurementTable';
 
 export default function DeviceDetailPage() {
   const { id } = useParams();
-  console.log('DeviceDetailPage id:', id);
   const navigate = useNavigate();
   const { plant, loading: plantLoading, error: plantError } = usePlant(id);
   const { measurements, loading: measLoading } = useMeasurements(id, { limit: 50 });
@@ -38,7 +37,6 @@ export default function DeviceDetailPage() {
     timestamp: formatDateTime(m.timestamp),
   }));
 
-  console.log('Plant:', plant);
   if (plantLoading) return (
     <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
       Načítání...
@@ -114,7 +112,7 @@ export default function DeviceDetailPage() {
             thresholds={thresholds}
           />
         </>
-      )};
+      )}
       </>
     )}
     </div>

@@ -35,7 +35,7 @@ export default function Header() {
         </div>
 
         {/* desktop nav */}
-        <nav className="hidden sm:flex items-center gap-1 mr-15" >
+        <nav className="hidden sm:flex items-center gap-3 mr-13" >
           {navLinks.map(({ to, label }) => (
             <NavLink
               key={to}
