@@ -4,8 +4,9 @@ IoT plant monitoring system — tracks temperature and humidity via sensor, gate
 
 ## Live URLs
 
-- Frontend: <https://flowerpower-bmv1.onrender.com>
-- Backend API: <https://flowerpower-api-l3pv.onrender.com>
+- App: <https://flowerpower-api-l3pv.onrender.com>
+- ~~Frontend (retired): <https://flowerpower-bmv1.onrender.com>~~
+- ~~Backend API (direct): <https://flowerpower-api-l3pv.onrender.com>~~
 
 > Free tier services sleep after 15 min of inactivity — first load may take 30–60 seconds.
 
@@ -222,16 +223,15 @@ Every 5 min  → POST /measurements  Authorization: Bearer <accessToken>
 
 ## Cloud deployment
 
-### Backend — Render Web Service
+### Render Web Service (serves both API and frontend)
 
 1. Connect your GitHub repo in [Render](https://render.com).
-2. Set **Root directory** to `server`, **Build command** to `npm install`, **Start command** to `node index.js`.
-3. Add environment variables: `MONGODB_URI`, `PORT` (Render sets this automatically), `NODE_ENV=production`.
+2. Set **Root directory** to `.` (repo root), **Build command** to `cd client && npm install && npm run build && cd ../server && npm install`, **Start command** to `node server/index.js`.
+3. Add environment variables: `MONGODB_URI`, `NODE_ENV=production`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SESSION_SECRET`, `SERVER_URL=https://your-service.onrender.com`.
 
-### Frontend — Render Static Site
+### ~~Frontend — Render Static Site (retired)~~
 
-1. Set **Root directory** to `client`, **Build command** to `npm install && npm run build`, **Publish directory** to `dist`.
-2. Add environment variable: `VITE_API_URL=https://your-backend.onrender.com`.
+~~Previously deployed as a separate static site. Retired in favour of the Express server serving the built React app from the same domain, which is required for session cookies to work across Safari and Firefox.~~
 
 ### Database — MongoDB Atlas
 
