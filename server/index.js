@@ -35,10 +35,15 @@ passport.use(new GoogleStrategy({
   callbackURL: `${process.env.SERVER_URL}/auth/google/callback`,
   proxy: true,
 }, (accessToken, refreshToken, profile, done) => {
+  const email = profile.emails[0].value;
+  const allowedEmails = (process.env.ALLOWED_EMAILS || '').split(',').map((e) => e.trim());
+  if (allowedEmails.length > 0 && !allowedEmails.includes(email)) {
+    return done(null, false);
+  }
   done(null, {
     id: profile.id,
     name: profile.displayName,
-    email: profile.emails[0].value,
+    email,
     photo: profile.photos[0]?.value,
   });
 }));
