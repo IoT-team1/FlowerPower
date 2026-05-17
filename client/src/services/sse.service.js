@@ -4,7 +4,7 @@ class SseService {
     this.listeners = new Map();
   }
 
-  connect(url = `${import.meta.env.VITE_API_URL}/sse/stream`) {
+  connect(url = `${import.meta.env.VITE_API_URL ?? ''}/sse/stream`) {
     if (this.es) return;
     
     console.log('Connecting to PRODUCTION SSE at:', url);

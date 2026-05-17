@@ -4,6 +4,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const path = require("path");
 require("dotenv").config();
 const connectDB = require("./db");
 
@@ -12,7 +13,7 @@ app.set('trust proxy', 1);
 
 // Middleware configuration
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
 }));
 app.use(express.json());
@@ -24,7 +25,7 @@ app.use(session({
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
   cookie: {
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },
 }));
@@ -62,7 +63,6 @@ const sseRoutes = require("./src/routes/sseRoutes");
 const requireAuth = require("./src/middleware/requireAuth");
 
 // Public routes
-app.get("/", (req, res) => res.json({ status: "ok" }));
 app.get("/ping", (req, res) => res.send("ok"));
 app.use("/auth", authRoutes);
 
@@ -72,6 +72,11 @@ app.use("/plants", requireAuth, plantRoutes);
 app.use("/measurements", measurementRoutes);
 app.use("/alerts", requireAuth, alertRoutes);
 app.use("/sse", requireAuth, sseRoutes);
+
+// Serve React frontend in production
+const clientDist = path.join(__dirname, "../client/dist");
+app.use(express.static(clientDist));
+app.get("*", (req, res) => res.sendFile(path.join(clientDist, "index.html")));
 
 // Start the server
 const PORT = process.env.PORT || 3001;
