@@ -28,7 +28,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function HistoryChart({ measurements, range = '24h' }) {
   const chartData = measurements
-  const isMobile = window.innerWidth < 640;
+  const isMobile = window.innerWidth < 830;
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
@@ -49,29 +49,27 @@ export default function HistoryChart({ measurements, range = '24h' }) {
           Žádná data pro vybrané období.
         </div>
       ) : (
-        <>
-          <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={chartData} margin={{ top: 4, right: 20, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis
-                dataKey="label"
-                tick={{ fontSize: 10, fill: '#9ca3af' }}
-                tickLine={false}
-                axisLine={true}
-                interval={isMobile ? range === '24h' ? 3 : range === '7d' ? 1 : 4 : range === '30d' ? 3 : 0}
-              />
-              <YAxis
-                tick={{ fontSize: 10, fill: '#9ca3af' }}
-                tickLine={false}
-                axisLine={true}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="temperature" stroke="#134087" strokeWidth={1.5} dot={ { r: 2, fill: "#134087"}} activeDot={{ r: 3 }}                connectNulls={false}/>
-              <Line type="monotone" dataKey="moisture"    stroke="#BA7517" strokeWidth={1.5} dot={ { r: 2, fill: "#BA7517"}} activeDot={{ r: 3 }}               connectNulls={false} />
-              <Line type="monotone" dataKey="humidity"    stroke="#085319" strokeWidth={1.5} dot={ { r: 2, fill: "#085319"}} activeDot={{ r: 3 }}               connectNulls={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </>
+        <ResponsiveContainer width="100%" height={220}>
+          <LineChart data={chartData} margin={{ top: 4, right: 20, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
+            <XAxis
+              dataKey="label"
+              tick={{ fontSize: 10, fill: '#9ca3af' }}
+              tickLine={false}
+              axisLine={true}
+              interval={isMobile ? range === '24h' ? 3 : range === '7d' ? 1 : 4 : range === '30d' ? 3 : 0}
+            />
+            <YAxis
+              tick={{ fontSize: 10, fill: '#9ca3af' }}
+              tickLine={false}
+              axisLine={true}
+            />
+            <Tooltip content={<CustomTooltip/>}/>
+            <Line type="monotone" dataKey="temperature" stroke="#134087" strokeWidth={1.5} dot={{ r: 2, fill: "#134087" }} activeDot={{ r: 3 }} connectNulls={false}/>
+            <Line type="monotone" dataKey="moisture" stroke="#BA7517" strokeWidth={1.5} dot={{ r: 2, fill: "#BA7517" }} activeDot={{ r: 3 }} connectNulls={false}/>
+            <Line type="monotone" dataKey="humidity" stroke="#085319" strokeWidth={1.5} dot={{ r: 2, fill: "#085319" }} activeDot={{ r: 3 }} connectNulls={false}/>
+          </LineChart>
+        </ResponsiveContainer>
       )}
     </div>
   );

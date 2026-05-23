@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { formatRelativeTime } from '../../utils/formatters';
+import { useNavigate } from "react-router-dom";
 
 export default function AlertPanel({ onClose, alerts, resolve }) {
   const [filter, setFilter] = useState('all');
+
+  const navigate = useNavigate();
 
   const filtered = [...alerts]
     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
@@ -59,7 +62,7 @@ export default function AlertPanel({ onClose, alerts, resolve }) {
                     alert.isResolved ? 'bg-green-500' : 'bg-amber-500 animate-pulse'
                   }`} />
                   <div className="min-w-0">
-                    <div className="text-[11px] font-bold text-gray-900 uppercase">
+                    <div className="text-[11px] font-bold text-gray-900 uppercase cursor-pointer hover:text-gray-500 transition-colors" onClick={() => navigate(`/devices/${alert.plantId}`)}>
                       {typeof alert.plantId === 'object' ? alert.plantId?.name : alert.plantName ?? 'Rostlina'}
                     </div>
                     <div className="text-xs text-gray-600 mt-0.5 leading-snug">{alert.message}</div>
