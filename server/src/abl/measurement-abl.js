@@ -8,11 +8,14 @@ const MeasurementAbl = {
   async create(req, res) {
     try {
       const gatewayId = req.gatewayId;
-
+      // 1. KROK OPRAVY: Vytáhneme timestamp z req.body (pokud ho brána posílá)
       const { plantId, temperature, humidity, moisture, timestamp } = req.body;
 
+      // Poznáme, zda jde o historická data (pokud timestamp v req.body existuje)
+      const isHistoricalData = !!timestamp;
       const measurementDate = timestamp ? new Date(timestamp) : new Date();
- 
+
+      // 2. KROK OPRAVY: Uložíme měření se správným časem (historickým nebo aktuálním)
       await MeasurementDao.create({ 
         gatewayId, 
         plantId, 
@@ -30,10 +33,8 @@ const MeasurementAbl = {
       if (!plant) return res.status(404).json({ error: 'plantNotFound' });
 
       let alertsCreated = 0;
-
       const { minTemp, maxTemp, minHum, maxHum, minMoist, maxMoist } = plant.thresholds;
       
-      // Store alert data as objects including recommendation
       const alertTriggers = [];
 
       if (temperature < minTemp)
@@ -52,27 +53,31 @@ const MeasurementAbl = {
         alertTriggers.push({ msg: `Vlhkost vzduchu je příliš vysoká (${humidity}%).`, rec: "Vlhkost vzduchu je příliš vysoká. Doporučujeme vyvětrat." });
 
       for (const item of alertTriggers) {
-        // ÚPRAVA: Alert v databázi bude mít čas odpovídající reálnému měření
+        // 3. KROK OPRAVY: Uložíme alert do DB s reálným časem incidentu
         const alert = await AlertDao.create({
           plantId: plant._id,
           plantName: plant.name,
           message: item.msg,
           recommendation: item.rec,
           level: 'warning',
-          timestamp: measurementDate
+          timestamp: measurementDate // Uloží se správný historický čas
         });
 
-        // ÚPRAVA: SSE broadcast odešle na frontend reálný čas měření namísto new Date()
-        SseManager.broadcast('alert', {
-          _id: alert._id,
-          plantId: plant._id,
-          plantName: plant.name,
-          message: item.msg,
-          recommendation: item.rec,
-          level: 'warning',
-          isResolved: false,
-          timestamp: measurementDate,
-        });
+        // 4. KROK OPRAVY: Klíčová podmínka! 
+        // Pokud jsou data z historie (isHistoricalData === true), přeskočíme vysílání na frontend.
+        // Alert se pošle do prohlížeče JEN tehdy, když se to děje reálně TEĎ zaživa.
+        if (!isHistoricalData) {
+          SseManager.broadcast('alert', {
+            _id: alert._id,
+            plantId: plant._id,
+            plantName: plant.name,
+            message: item.msg,
+            recommendation: item.rec,
+            level: 'warning',
+            isResolved: false,
+            timestamp: measurementDate,
+          });
+        }
 
         alertsCreated++;
       }
