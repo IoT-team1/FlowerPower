@@ -73,7 +73,7 @@ app.get("/ping", (req, res) => res.send("ok"));
 app.use("/auth", authRoutes);
 
 // Protected routes
-app.use("/gateways", requireAuth, gatewayRoutes);
+app.use("/gateways", gatewayRoutes);
 app.use("/plants", requireAuth, plantRoutes);
 app.use("/measurements", measurementRoutes);
 app.use("/alerts", requireAuth, alertRoutes);
