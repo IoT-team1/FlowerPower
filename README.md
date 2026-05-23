@@ -18,17 +18,34 @@ FlowerPower/
 │   ├── index.js               # Express app entry point
 │   ├── db.js                  # MongoDB connection
 │   ├── init-db.js             # One-time seed script for empty databases
+│   ├── seed-data.json         # Sample data used by init-db.js
 │   ├── .env                   # Local secrets (never commit)
 │   └── src/
-│       ├── routes/            # Express routers
+│       ├── routes/            # Express routers (auth, gateway, plant, measurement, alert, sse)
 │       ├── abl/               # Application business logic
 │       ├── dao/               # Database access layer
 │       ├── models/            # Mongoose schemas
-│       └── middleware/
-│           └── auth.js        # Bearer token verification
+│       ├── middleware/
+│       │   ├── auth.js        # Bearer token verification (used by /measurements)
+│       │   └── requireAuth.js # Session auth guard (used by /plants, /alerts, /sse)
+│       └── sevises/
+│           └── sseManager.js  # Server-sent events broadcasting
 ├── client/                    # React + Vite frontend
 │   └── src/
-│       └── App.jsx
+│       ├── pages/             # DevicesPage, DeviceDetailPage, HistoryPage, LoginPage
+│       ├── components/        # alerts, auth, devices, history, layout, measurements
+│       ├── hooks/             # useAlerts, useAuth, useMeasurements, usePlants, useSse, …
+│       ├── api/               # Axios wrappers per resource
+│       ├── store/             # Zustand alert store
+│       ├── services/          # sse.service.js
+│       └── utils/             # formatters, stats, thresholds
+├── gateway/
+│   ├── gw.py                  # Python gateway — reads Arduino via serial, buffers in SQLite, sends to API
+│   ├── config.json            # Gateway config (backendUrl, gatewayId, deviceSecret, ports, intervals)
+│   └── requirements.txt       # Python dependencies
+├── node/
+│   └── sensor_node.ino        # Arduino sketch — reads moisture (A0) + DHT11, outputs JSON over serial
+├── render.yaml                # Render deployment config
 └── README.md
 ```
 
@@ -36,6 +53,7 @@ FlowerPower/
 
 - Node.js LTS — <https://nodejs.org>
 - A MongoDB database (Atlas cluster or local install)
+- Google OAuth credentials (for dashboard login) — create a project at <https://console.cloud.google.com>
 
 ---
 
@@ -56,7 +74,15 @@ cd ../client && npm install
 ```
 MONGODB_URI=your_mongodb_connection_string
 PORT=3001
+SESSION_SECRET=a_long_random_string
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+CLIENT_URL=http://localhost:5173
+SERVER_URL=http://localhost:3001
+ALLOWED_EMAILS=you@example.com,colleague@example.com
 ```
+
+`ALLOWED_EMAILS` is a comma-separated list of Google accounts permitted to log in. Leave it unset to allow any Google account.
 
 Pick one of the two options below to get a connection string.
 
@@ -138,25 +164,30 @@ VITE_API_URL=https://your-backend.onrender.com
 
 ## API endpoints
 
-| Method | Endpoint | Auth | Design command |
-|--------|----------|------|----------------|
-| GET | `/ping` | None | — |
-| POST | `/gateways` | None | `gateway/create` |
-| POST | `/gateways/login` | None | `gateway/login` |
-| GET | `/gateways` | None | `gateway/list` |
-| GET | `/gateways/:id` | None | `gateway/get` |
-| PATCH | `/gateways/:id` | None | `gateway/update` |
-| DELETE | `/gateways/:id` | None | `gateway/delete` |
-| POST | `/plants` | None | `plant/create` |
-| GET | `/plants` | None | `plant/list` (add `?gatewayId=` to filter) |
-| GET | `/plants/:id` | None | `plant/get` |
-| PATCH | `/plants/:id` | None | `plant/update` |
-| DELETE | `/plants/:id` | None | `plant/delete` |
-| POST | `/measurements` | Bearer token | `measurement/create` |
-| GET | `/measurements` | None | `measurement/list` (add `?gatewayId=` to filter) |
-| DELETE | `/measurements/old` | None | `measurement/deleteOld` (add `?days=30`) |
-| GET | `/alerts` | None | `alert/list` (add `?resolved=true` for all) |
-| PATCH | `/alerts/:id` | None | `alert/update` |
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/ping` | None | Health check |
+| POST | `/gateways` | None | Register a new gateway |
+| POST | `/gateways/login` | None | Authenticate device, returns Bearer token |
+| GET | `/gateways` | None | List all gateways |
+| GET | `/gateways/:id` | None | Get gateway details |
+| PATCH | `/gateways/:id` | None | Update gateway metadata or status |
+| DELETE | `/gateways/:id` | None | Remove a gateway |
+| POST | `/plants` | Session | Create a plant |
+| GET | `/plants` | Session | List plants (add `?gatewayId=` to filter) |
+| GET | `/plants/:id` | Session | Get plant details |
+| PATCH | `/plants/:id` | Session | Update plant |
+| DELETE | `/plants/:id` | Session | Delete plant |
+| POST | `/measurements` | Bearer token | Submit a measurement from gateway |
+| GET | `/measurements` | None | List measurements (add `?gatewayId=` to filter) |
+| DELETE | `/measurements/old` | None | Delete old measurements (add `?days=30`) |
+| GET | `/alerts` | Session | List alerts (add `?resolved=true` for all) |
+| PATCH | `/alerts/:id` | Session | Update alert |
+| GET | `/sse` | Session | Server-sent events stream |
+| GET | `/auth/google` | None | Start Google OAuth login |
+| GET | `/auth/google/callback` | None | Google OAuth callback |
+| GET | `/auth/me` | None | Get current logged-in user |
+| GET | `/auth/logout` | None | Log out |
 
 ### Gateway auth flow
 
@@ -205,21 +236,56 @@ curl -X POST http://localhost:3001/plants \
 
 ---
 
-## Gateway flow (Node-RED on Raspberry Pi / laptop)
+## Gateway flow (Python on Raspberry Pi / laptop)
+
+The gateway script (`gateway/gw.py`) reads sensor data from an Arduino over serial, buffers raw readings in a local SQLite database, averages them on a configurable interval, and sends the averaged measurements to the cloud API.
 
 ```
 RPi first boot → POST /gateways {"name": "RPi Gateway 1"}
-             ← receives device_secret, stored permanently in Node-RED
+             ← receives device_secret — store in config.json permanently
 
-On each cycle → POST /gateways/login {"id": "...", "device_secret": "..."}
-             ← receives accessToken
+Every N seconds → reads Arduino JSON over serial
+               → saves raw reading to local SQLite (offline-safe buffer)
 
-Every 5 min  → POST /measurements  Authorization: Bearer <accessToken>
-                                   {"temperature": 22.5, "humidity": 58.3}
-             ← 200 OK
+Every M seconds → averages buffered raw readings
+               → POST /gateways/login  {"id": "...", "device_secret": "..."}
+               ← receives accessToken (cached in memory, refreshed before expiry)
+               → POST /measurements  Authorization: Bearer <accessToken>
+                                     {"moisture": 42.0, "temperature": 22.5, "humidity": 58.3}
+               ← 200 OK — averaged record deleted from local buffer
 ```
 
----
+Configure intervals in `gateway/config.json`:
+
+```json
+{
+  "backendUrl": "https://your-api.onrender.com",
+  "gatewayId": "GATEWAY_OBJECT_ID",
+  "deviceSecret": "YOUR_DEVICE_SECRET",
+  "arduinoPort": "/dev/ttyACM0",
+  "baudRate": 9600,
+  "measurementIntervalSec": 10,
+  "averagingIntervalSec": 120
+}
+```
+
+Install dependencies and run:
+
+```bash
+cd gateway
+pip install -r requirements.txt
+python gw.py
+```
+
+## Sensor node (Arduino)
+
+`node/sensor_node.ino` reads a capacitive moisture sensor on pin `A0` and a DHT11 temperature/humidity sensor on pin `4`, then outputs a JSON line over serial every cycle:
+
+```json
+{"MoisturePercent": 55.2, "Temperature": 22.5, "Humidity": 58.0}
+```
+
+The gateway reads this JSON and stores it locally before forwarding to the API.
 
 ## Cloud deployment
 
