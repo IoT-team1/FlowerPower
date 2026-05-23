@@ -27,4 +27,7 @@ const measurementSchema = new mongoose.Schema({
 // Index to optimize queries filtering by gateway and sorted by time
 measurementSchema.index({ gatewayId: 1, timestamp: -1 });
 
+
+measurementSchema.index({ plantId: 1, timestamp: -1 });
+
 module.exports = mongoose.model("Measurement", measurementSchema);

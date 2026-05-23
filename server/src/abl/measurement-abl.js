@@ -8,15 +8,24 @@ const MeasurementAbl = {
   async create(req, res) {
     try {
       const gatewayId = req.gatewayId;
-      const { plantId, temperature, humidity, moisture } = req.body;
 
-      // 1. Save measurement via DAO
-      await MeasurementDao.create({ gatewayId, plantId, temperature, humidity, moisture });
+      const { plantId, temperature, humidity, moisture, timestamp } = req.body;
 
-      // 3. Update gateway status via DAO
+      const measurementDate = timestamp ? new Date(timestamp) : new Date();
+ 
+      await MeasurementDao.create({ 
+        gatewayId, 
+        plantId, 
+        temperature, 
+        humidity, 
+        moisture, 
+        timestamp: measurementDate 
+      });
+
+      // Update gateway status via DAO
       await GatewayDao.update(gatewayId, { lastSync: new Date(), status: "online" });
 
-      // 4. Check thresholds and create alerts
+      // Check thresholds and create alerts
       const plant = await PlantDao.get(plantId);
       if (!plant) return res.status(404).json({ error: 'plantNotFound' });
 
@@ -43,23 +52,26 @@ const MeasurementAbl = {
         alertTriggers.push({ msg: `Vlhkost vzduchu je příliš vysoká (${humidity}%).`, rec: "Vlhkost vzduchu je příliš vysoká. Doporučujeme vyvětrat." });
 
       for (const item of alertTriggers) {
+        // ÚPRAVA: Alert v databázi bude mít čas odpovídající reálnému měření
         const alert = await AlertDao.create({
           plantId: plant._id,
           plantName: plant.name,
           message: item.msg,
-          recommendation: item.rec, // Added recommendation to database
+          recommendation: item.rec,
           level: 'warning',
+          timestamp: measurementDate
         });
 
+        // ÚPRAVA: SSE broadcast odešle na frontend reálný čas měření namísto new Date()
         SseManager.broadcast('alert', {
           _id: alert._id,
           plantId: plant._id,
           plantName: plant.name,
           message: item.msg,
-          recommendation: item.rec, // Broadcast recommendation to frontend
+          recommendation: item.rec,
           level: 'warning',
           isResolved: false,
-          timestamp: new Date(),
+          timestamp: measurementDate,
         });
 
         alertsCreated++;
