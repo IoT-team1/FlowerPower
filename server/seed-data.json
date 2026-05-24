@@ -8,7 +8,7 @@
       "thresholds": { "minTemp": 18, "maxTemp": 28, "minHum": 40, "maxHum": 70, "minMoist": 30, "maxMoist": 90 }
     },
     {
-      "name": "Monstera",
+      "name": "Dipladenie",
       "thresholds": { "minTemp": 19, "maxTemp": 30, "minHum": 45, "maxHum": 75, "minMoist": 25, "maxMoist": 85 }
     },
     {
