@@ -252,7 +252,7 @@ def delete_measurements_by_ids(measurement_ids):
 
 
 def read_node(config):
-    port = config.get("arduinoPort", "/dev/ttyACM0")
+    port = config.get("arduinoPort", "/dev/ttyUSB0")
     baud_rate = config.get("baudRate", 9600)
 
     try:

@@ -2,7 +2,7 @@
   "backendUrl": "https://flowerpower-api-l3pv.onrender.com",
   "gatewayId": "id",
   "deviceSecret": "secret",
-  "arduinoPort": "/dev/ttyACM0",
+  "arduinoPort": "/dev/ttyUSB0",
   "baudRate": 9600,
   "measurementIntervalSec" : 15
 }

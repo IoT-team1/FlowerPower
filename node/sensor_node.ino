@@ -3,8 +3,8 @@
 #define M_SENSOR A0
 #define DHT_PIN 4
 
-const int DryVal = 3366;
-const int WetVal = 1320;
+const int DryVal = 579;
+const int WetVal = 270;
 
 int moistureVal;
 int moisturePercent;
